@@ -1,0 +1,112 @@
+.sidenav {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    height: 100vh;
+    width: 180px;
+    background-color: #B93030;
+    z-index: 90;
+    transition: 0.5s;
+}
+
+.sidenav.short {
+    width: 60px;
+}
+
+.sidenav-hamburg {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: -50px;
+    width: 60px;
+    height: 60px;
+    color: white;
+    background-color: #B93030;
+    border-radius: 0 0 20px 0;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidenav-hamburg.short {
+    right: 0;
+    border-radius: 0;
+}
+
+.sidenav-header {
+    font-size: 35px;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.sidenav-menu {
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav-menu-item {
+    display: flex;
+    align-items: center;
+    color: white;
+    margin: 3px 0;
+    height: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+}
+
+.sidenav-menu-item:not(.active)::before {
+    content: '';
+    position: absolute;
+    left: -500px;
+    width: 210px;
+    height: 50px;
+    background-color: #ffffff;
+    border-radius: 0 50px 50px 0;
+    transition: 0.3s;
+    z-index: 91;
+}
+
+.sidenav-menu-item:hover::before {
+    left: 0;
+}
+
+.icon {
+    margin: 0 18px;
+}
+
+.sidenav-menu-item .icon {
+    transition: 0.4s;
+    z-index: 92;
+}
+
+.sidenav-menu-item:hover:not(.active) .icon {
+    transform: translateY(-5px);
+    color: #B93030;
+}
+
+.name {
+    font-size: 20px;
+    margin: 0 5px;
+    transition: 0.5s;
+    text-transform: capitalize;
+    z-index: 92;
+}
+
+.sidenav-menu-item:hover .name {
+    color: #B93030;
+}
+
+.sidenav-menu-item.active {
+    color: #B93030;
+    background-color: #ffffff;
+    box-shadow: 4px 2px 7px grey inset;
+    z-index: 92;
+}
+
+
