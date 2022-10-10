@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"context"
@@ -8,7 +8,9 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func InitDb() *pgxpool.Pool{
+var DB *pgxpool.Pool
+
+func NewDb() *pgxpool.Pool{
 	ctx := context.Background()
 	connStr := "postgres://postgres:ppaallmm@localhost:5432/gims"
 	dbpool, err := pgxpool.Connect(ctx, connStr)
