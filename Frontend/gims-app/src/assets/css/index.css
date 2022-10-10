@@ -11,6 +11,8 @@
     --sidenav-short-width: 60px;
 
     --bottomnav-height: 8vh;
+
+    --container-shadow: 0 0 5px #D7D7F1;
 }
 
 body {

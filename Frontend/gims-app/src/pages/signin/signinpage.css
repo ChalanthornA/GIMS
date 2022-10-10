@@ -5,7 +5,6 @@
     align-items: center;
     height: 100vh;
     max-height: 100vh;
-    font-family: 'Prompt', sans-serif;
 }
 
 .container-signin {
@@ -55,14 +54,15 @@
 }
 
 .input-incorrect {
-    color: white;
+    opacity: 1;
+    color: var(--fourth-color-red);
     margin: 10px 0;
 }
 
 .button-signin {
     border: none;
     border-radius: 7px;
-    background-color: var(--main-color-red);
+    background-color: var(--second-color-red);
     width: 350px;
     height: 45px;
     color: white;
@@ -74,5 +74,5 @@
 }
 
 .button-signin:hover {
-    background-color: var(--third-color-red);
+    background-color: var(--main-color-red);
 }

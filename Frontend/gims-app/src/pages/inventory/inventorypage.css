@@ -4,5 +4,23 @@
 }
 
 .inventory-page-header {
-    top: 0;
+    display: flex;
+    box-sizing: border-box;
+    padding-left: 60px;
+    font-size: 30px;
+    font-weight: 600;
+    width: 100%;
+    height: 50px;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+.inventory-page-container {
+    display: flex;
+    box-sizing: border-box;
+    background-color: var(--main-bg);
+    border-radius: 15px;
+    margin: 1%;
+    min-height: 90vh;
+    box-shadow: var(--container-shadow);
 }
