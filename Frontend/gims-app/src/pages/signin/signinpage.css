@@ -1,5 +1,5 @@
 .background {
-    background-color: white;
+    background-color: var(--main-bg);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,7 +62,7 @@
 .button-signin {
     border: none;
     border-radius: 7px;
-    background-color: #E94B4B;
+    background-color: var(--main-color-red);
     width: 350px;
     height: 45px;
     color: white;
@@ -74,6 +74,5 @@
 }
 
 .button-signin:hover {
-    background-color: #ff0f0f;
-    border: solid 1px #ff0f0f;
+    background-color: var(--third-color-red);
 }

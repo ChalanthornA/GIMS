@@ -3,8 +3,10 @@ import './inventorypage.css';
 
 function InventoryPage() {
   return (
-    <div className="background">
-      inventory
+    <div className="inventory-background">
+      <div className="inventory-page-header">
+        inventory
+      </div>
     </div>
   );
 }

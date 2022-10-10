@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './sidenav.css';
 import { Link, useLocation } from 'react-router-dom';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptIcon from '@mui/icons-material/Receipt';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import BadgeIcon from '@mui/icons-material/Badge';
+// import AssessmentIcon from '@mui/icons-material/Assessment';
+// import BadgeIcon from '@mui/icons-material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -21,16 +21,16 @@ const sideNavMenu = [
     name: 'transaction',
     path: '/transaction'
   },
-  {
-    icon: AssessmentIcon,
-    name: 'report',
-    path: '/report'
-  },
-  {
-    icon: BadgeIcon,
-    name: 'employee',
-    path: '/employee'
-  }
+  // {
+  //   icon: AssessmentIcon,
+  //   name: 'report',
+  //   path: '/report'
+  // },
+  // {
+  //   icon: BadgeIcon,
+  //   name: 'employee',
+  //   path: '/employee'
+  // }
 ];
 
 function SideNav() {
@@ -43,11 +43,23 @@ function SideNav() {
     setIsActive(path);
   }
 
+  function expandSidenavClick(wide: boolean) {
+    setIsWide(wide);
+    localStorage.setItem('sidenavWidth', wide ? 'expand' : 'short');
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setIsWide(window.innerWidth > 1024);
+    });
+    localStorage.setItem('sidenavWidth', isWide ? 'expand' : 'short');
+  }, [isWide]);
+
   return (
     <div className={`sidenav ${isWide ? '' : 'short'}`}>
       <div
         className={`sidenav-hamburg ${isWide ? '' : 'short'}`}
-        onClick={() => { setIsWide(!isWide); }}
+        onClick={() => { expandSidenavClick(!isWide); }}
         onKeyDown={() => {}}
         role="button"
         tabIndex={0}

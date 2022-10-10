@@ -4,7 +4,7 @@
     background-color: #B93030;
     box-sizing: border-box;
     width: 98%;
-    height: 8vh;
+    height: var(--bottomnav-height);
     margin: 2% 1%;
     padding: 0 0.4%;
     border-radius: 1.5vh;
