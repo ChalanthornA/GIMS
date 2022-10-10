@@ -6,18 +6,18 @@ import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/middleware"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/repositories"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/usecases"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(app *fiber.App){
+func SetupRoutes(r *gin.Engine){
 	userRepository := repositories.NewUserRepository(database.DB)
 	userUseCase := usecases.NewUserUseCase(userRepository)
 	userController := controllers.NewUserController(userUseCase)
 
-	users := app.Group("/users")
-	users.Post("/registeradmin", userController.RegisterAdmin)
-	users.Post("/signin", userController.SignIn)
-	
-	users.Use(middleware.AuthorizationRequired())
-	users.Get("/testjwt", userController.TestJWT)
+	users := r.Group("/users")
+	users.POST("/registeradmin", userController.RegisterAdmin)
+	users.POST("/signin", userController.SignIn)
+
+	users.Use(middleware.AuthorizeJWT())
+	users.GET("/testjwt", userController.TestJWT)
 }

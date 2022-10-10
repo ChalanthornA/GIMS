@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
 type registerAdminBody struct {
@@ -22,44 +24,54 @@ func NewUserController(uu domains.UserUseCase) *UserController {
 	}
 }
 
-func (uc *UserController) RegisterAdmin(c *fiber.Ctx) error {
+func (uc *UserController) RegisterAdmin(c *gin.Context) {
 	body := new(registerAdminBody)
-	if err := c.BodyParser(body); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid Body")
+	if err := c.BindJSON(body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
 	}
 	newAdmin := &models.User{
 		Username: body.Username,
 		Password: body.Password,
 	}
 	if err := uc.userUseCase.RegisterAdmin(newAdmin, body.Secret); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 	})
 }
 
-func (uc *UserController) SignIn(c *fiber.Ctx) error{
+func (uc *UserController) SignIn(c *gin.Context){
 	body := new(models.User)
-	if err := c.BodyParser(body); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid Body")
+	if err := c.BindJSON(body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
 	}
 	token, err := uc.userUseCase.SignIn(body)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	c.JSON(http.StatusOK, gin.H{
 		"accesstoken": token,
 	})
 }
 
-func (uc *UserController) TestJWT(c *fiber.Ctx) error{
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"username": c.Locals("username"),
-		"role": c.Locals("role"),
+func (uc *UserController) TestJWT(c *gin.Context){
+	username, _ := c.Get("username")
+	role, _ := c.Get("role")
+	c.JSON(http.StatusOK, gin.H{
+		"username": username,
+		"role": role,
 	})
 }

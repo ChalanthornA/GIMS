@@ -1,33 +1,36 @@
 package middleware
 
 import (
-	"github.com/gofiber/fiber/v2"
-	jwtware "github.com/gofiber/jwt/v2"
+	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func AuthorizationRequired() fiber.Handler {
-    return jwtware.New(jwtware.Config{
-        SuccessHandler: AuthSuccess,
-        ErrorHandler:   AuthError,
-        SigningKey:     []byte("secret"),
-        SigningMethod: "HS256",
-    })
+func ValidateToken(accessToken string) (*jwt.Token, error){
+	return jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("invalid token")
+		}
+		return []byte("secret"), nil
+	})
 }
 
-func AuthError(c *fiber.Ctx, e error) error {
-    c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-        "error": "Unauthorized",
-        "msg":   e.Error(),
-    })
-    return nil
-}
-
-func AuthSuccess(c *fiber.Ctx) error {
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	c.Locals("username", claims["username"].(string))
-	c.Locals("role", claims["role"].(string))
-    c.Next()
-    return nil
+func AuthorizeJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		const BEARER_SCHEMA = "Bearer "
+		authHeader := c.GetHeader("Authorization")
+		tokenString := authHeader[len(BEARER_SCHEMA):]
+		token, err := ValidateToken(tokenString)
+		if token.Valid {
+			claims := token.Claims.(jwt.MapClaims)
+			c.Set("username", claims["username"])
+			c.Set("role", claims["role"])
+			fmt.Println(claims)
+		} else {
+			fmt.Println(err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+	}
 }

@@ -3,19 +3,15 @@ package main
 import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/router"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	app := fiber.New()
+	r := gin.Default()
 	database.DB = database.NewDb()
 	defer database.DB.Close()
 
-	router.SetupRoutes(app)
+	router.SetupRoutes(r)
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
-
-	app.Listen(":8080")
+	r.Run()
 }
