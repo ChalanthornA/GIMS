@@ -8,14 +8,12 @@ function Layout() {
   return (
     <div className="layout">
       {
-        window.innerWidth > 480 && <SideNav />
+        window.innerWidth > 500
+          ? <SideNav /> : <BottomNav />
       }
       <div className="layout-content">
         <Outlet />
       </div>
-      {
-        window.innerWidth <= 480 && <BottomNav />
-      }
     </div>
   );
 }

@@ -51,10 +51,11 @@
 
 .sidenav-header.short > div {
     opacity: 0;
+    transform: translateX(-100px);
 }
 
 .sidenav-menu {
-    padding-top: 30px;
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -103,15 +104,17 @@
 .name {
     font-size: 20px;
     margin: 0 5px;
-    transition: all 0.4s ease-in;
+    opacity: 1;
+    transition: all 0.3s;
     text-transform: capitalize;
     z-index: 92;
     pointer-events: auto;
+    transform: translateX(0);
 }
 
 .sidenav.short .sidenav-menu-item .name {
     opacity: 0;
-    color: #ffffff;
+    transform: translateX(-200px);
     pointer-events: none;
 }
 
