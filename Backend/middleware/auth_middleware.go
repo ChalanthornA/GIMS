@@ -27,7 +27,6 @@ func AuthorizeJWT() gin.HandlerFunc {
 			claims := token.Claims.(jwt.MapClaims)
 			c.Set("username", claims["username"])
 			c.Set("role", claims["role"])
-			fmt.Println(claims)
 		} else {
 			fmt.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)

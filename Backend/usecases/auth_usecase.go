@@ -9,18 +9,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (uu *userUseCase) SignIn(u *models.User) (string, error){
+func (uu *userUseCase) SignIn(u *models.User) (*models.User, string, error){
 	user, err := uu.userRepo.FindUser(u.Username)
 	if err != nil {
-		return "", err
+		return user, "", err
 	}
 	if user.Username != u.Username{
-		return "", fmt.Errorf("can't find user")
+		return user, "", fmt.Errorf("can't find user")
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(u.Password)); err != nil{
-		return "", fmt.Errorf("wrong password")
+		return user, "", fmt.Errorf("wrong password")
 	}
-	return createToken(user)
+	accessToken, err := createToken(user)
+	return user, accessToken, err
 }
 
 func createToken(u *models.User) (string, error){

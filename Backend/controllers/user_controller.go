@@ -55,7 +55,7 @@ func (uc *UserController) SignIn(c *gin.Context){
 		})
 		return
 	}
-	token, err := uc.userUseCase.SignIn(body)
+	user, token, err := uc.userUseCase.SignIn(body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -63,7 +63,42 @@ func (uc *UserController) SignIn(c *gin.Context){
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"username": user.Username,
+		"role": user.Role,
 		"accesstoken": token,
+	})
+}
+
+func (uc *UserController) Register(c *gin.Context) {
+	role, _ := c.Get("role")
+	if role != "admin"{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Only admin can register account",
+		})
+		return
+	}
+	body := new(models.User)
+	if err := c.BindJSON(body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if body.Role != "owner" && body.Role != "employee"{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "role must be owner or employee",
+		})
+		return
+	}
+	err := uc.userUseCase.Register(body)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
 	})
 }
 

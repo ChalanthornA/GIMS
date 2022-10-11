@@ -19,5 +19,6 @@ func SetupRoutes(r *gin.Engine){
 	users.POST("/signin", userController.SignIn)
 
 	users.Use(middleware.AuthorizeJWT())
+	users.POST("/register", userController.Register)
 	users.GET("/testjwt", userController.TestJWT)
 }
