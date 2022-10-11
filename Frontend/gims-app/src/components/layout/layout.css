@@ -1,0 +1,19 @@
+.layout {
+    display: flex;
+    width: 100vw;
+}
+
+.layout-content {
+    padding-left: var(--sidenav-short-width);
+    transition: all 0.5s ease-out;
+    width: 100%;
+}
+
+.layout-content.mobile {
+    padding-bottom: var(--bottomnav-height);
+    padding-left: 0;
+}
+
+.layout-content.expand-sidenav {
+    padding-left: var(--sidenav-width);
+}

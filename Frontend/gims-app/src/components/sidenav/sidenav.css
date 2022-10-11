@@ -4,15 +4,15 @@
     position: fixed;
     left: 0;
     height: 100vh;
-    width: 200px;
-    background-color: #B93030;
+    width: var(--sidenav-width);
+    background-color: var(--main-color-red);
     z-index: 90;
     transition: all 0.5s;
     font-family: 'Prompt', sans-serif;
 }
 
 .sidenav.short {
-    width: 60px;
+    width: var(--sidenav-short-width);
 }
 
 .sidenav-hamburg {
@@ -24,7 +24,7 @@
     width: 60px;
     height: 50px;
     color: white;
-    background-color: #B93030;
+    background-color: var(--main-color-red);
     border-radius: 0 0 20px 0;
     cursor: pointer;
     transition: 0.4s;
@@ -76,7 +76,7 @@
     width: 90%;
     margin: 0 5%;
     height: 50px;
-    background-color:azure;
+    background-color:var(--second-bg);
     border-radius: 12px;
     transition: all 0.3s ease;
     z-index: 91;
@@ -98,7 +98,7 @@
 
 .sidenav-menu-item:hover:not(.active) .icon {
     transform: translateY(-5px);
-    color: #B93030;
+    color: var(--main-color-red);
 }
 
 .name {
@@ -119,12 +119,12 @@
 }
 
 .sidenav-menu-item:hover .name {
-    color: #B93030;
+    color: var(--main-color-red);
 }
 
 .sidenav-menu-item.active {
-    color: #B93030;
-    background-color: #ffffff;
+    color: var(--main-color-red);
+    background-color: var(--main-bg);
     box-shadow: 4px 2px 7px grey inset;
     z-index: 92;
 }
@@ -133,8 +133,8 @@
     position: absolute;
     left: 70px;
     opacity: 0;
-    color: #B93030;
-    background-color: #ffffff;
+    color: var(--main-color-red);
+    background-color: var(--main-bg);
     padding: 7px;
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -157,7 +157,7 @@
     width: 90%;
     height: 50px;
     color: #ffffff;
-    background-color: #831818;
+    background-color: var(--second-color-red);
     border-radius: 10px;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .account-box:hover {
-    color: #dc6969;
+    color: var(--third-color-red);
 }
 
 .sidenav.short .account-box {
@@ -201,11 +201,11 @@
     left: 82%;
     cursor: pointer;
     transition: 0.35s;
-    background-color: #831818;
+    background-color: var(--second-color-red);
 }
 
 .account-logout:hover {
-    color: #B93030;
+    color: var(--main-color-red);
 }
 
 .sidenav.sidenav.short .account-logout {
@@ -216,8 +216,8 @@
     position: absolute;
     left: 50px;
     opacity: 0;
-    color: #B93030;
-    background-color: #ffffff;
+    color: var(--main-color-red);
+    background-color: var(--main-bg);
     padding: 7px;
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
