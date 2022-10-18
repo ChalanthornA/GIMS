@@ -31,7 +31,7 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 	fmt.Println("Successfully created users table")
 	createGoldDetailTableSql := `
 		CREATE TABLE IF NOT EXISTS gold_details (
-			id BIGINT NOT NULL, 
+			gold_detail_id BIGINT NOT NULL, 
 			code VARCHAR(50),
 			type VARCHAR(50), 
 			detail VARCHAR(100), 
@@ -40,7 +40,7 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 			gold_smith_fee FLOAT, 
 			picture VARCHAR(100), 
 			other_detail VARCHAR(100),
-			PRIMARY KEY (id)
+			PRIMARY KEY (gold_detail_id)
 		);
 	`
 	if _, err := dbpool.Exec(ctx, createGoldDetailTableSql); err != nil {
@@ -50,12 +50,12 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 	fmt.Println("Successfully created gold_details table")
 	createGoldInventoryTableSql := `
 		CREATE TABLE IF NOT EXISTS gold_inventories (
-			id BIGINT NOT NULL,
+			gold_inventory_id BIGINT NOT NULL,
 			gold_detail_id BIGINT NOT NULL,
 			status VARCHAR(50), 
 			date_in TIMESTAMPTZ NOT NULL,
-			PRIMARY KEY (id),
-			FOREIGN KEY (gold_detail_id) REFERENCES gold_details(id)
+			PRIMARY KEY (gold_inventory_id),
+			FOREIGN KEY (gold_detail_id) REFERENCES gold_details(gold_detail_id)
 		);
 	`
 	if _, err := dbpool.Exec(ctx, createGoldInventoryTableSql); err != nil {

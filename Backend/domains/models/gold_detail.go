@@ -1,7 +1,7 @@
 package models
 
 type GoldDetail struct {
-	ID           uint32  `json:"id"`
+	GoldDetailID uint32  `json:"gold_detail_id"`
 	Code         string  `json:"code"`
 	Type         string  `json:"type"`
 	Detail       string  `json:"detail"`

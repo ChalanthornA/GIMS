@@ -12,7 +12,7 @@ func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error{
 	if err != nil {
 		return err
 	}
-	insertGoldInventorySql := `INSERT INTO gold_inventories (id, gold_detail_id, status, date_in) VALUES ($1, $2, $3, $4);`
+	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in) VALUES ($1, $2, $3, $4);`
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	ctx := context.Background()
 	if _, err := gr.db.Exec(ctx, insertGoldInventorySql, id, goldDetailID, "s", time.Now().In(loc)); err != nil {
