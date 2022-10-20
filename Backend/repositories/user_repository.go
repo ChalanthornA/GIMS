@@ -59,16 +59,16 @@ func (ur *userRepository) FindUser(username string) (*models.User, error) {
 	return u, nil
 }
 
-func (ur *userRepository) QueryAllUser() ([]models.User, error) {
-	var users []models.User
-	queryAllUserSql := `SELECT * FROM users;`
+func (ur *userRepository) QueryAllUser() ([]models.UserResponse, error) {
+	var users []models.UserResponse
+	queryAllUserSql := `SELECT username, role FROM users;`
 	rows, err := ur.db.Query(ur.ctx, queryAllUserSql);
 	if err != nil {
 		return users, err
 	}
 	for rows.Next(){
-		var u models.User
-		if err = rows.Scan(&u.ID, &u.Username, &u.Password, &u.Role); err != nil{
+		var u models.UserResponse
+		if err = rows.Scan(&u.Username, &u.Role); err != nil{
 			return users, err
 		}
 		if u.Role == "admin"{
@@ -91,4 +91,8 @@ func (ur *userRepository) UpdatePassword(username, newHashPassword string) error
 	return err
 }
 
-func (ur *userRepository) DeleteUser(username string){}
+func (ur *userRepository) DeleteUser(username string) error {
+	deleteUserSql := `DELETE FROM users WHERE username = $1;`
+	_, err := ur.db.Exec(ur.ctx, deleteUserSql, username)
+	return err
+}

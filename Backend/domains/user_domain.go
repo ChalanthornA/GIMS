@@ -10,13 +10,16 @@ type UserUseCase interface{
 	GenerateHashPasswordAndReplaceInUserModel(u *models.User) error
 	RenameUsername(oldUsername, newUsername string) error
 	UpdatePassword(username, password string) error
+	QueryAllUser() ([]models.UserResponse, error)
+	DeleteUser(username string) error
 }
 
 type UserRepository interface{
 	InsertUser(u *models.User) error
 	CheckUsername(username string) error
 	FindUser(username string) (*models.User, error)
-	QueryAllUser() ([]models.User, error)
+	QueryAllUser() ([]models.UserResponse, error)
 	UpdateUsername(oldUsername, newUsername string) error
 	UpdatePassword(username, newHashPassword string) error
+	DeleteUser(username string) error
 }

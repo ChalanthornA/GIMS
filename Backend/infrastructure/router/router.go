@@ -24,6 +24,8 @@ func SetupRoutes(r *gin.Engine) {
 		auth.GET("/profile", userController.TestJWT)
 		auth.PUT("/renameusername", userController.RenameUsername)
 		auth.PUT("/updatepassword", userController.UpdatePassword)
+		auth.GET("/queryalluser", userController.QueryAllUser)
+		auth.DELETE("/deleteuser/:username", userController.DeleteUser)
 	}
 
 	r.Use(middlewares.AuthorizeJWT())

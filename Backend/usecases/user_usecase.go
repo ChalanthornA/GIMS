@@ -60,7 +60,14 @@ func (uu *userUseCase) Register(u *models.User) error{
 	return err
 }
 
+func (uu* userUseCase) QueryAllUser() ([]models.UserResponse, error){
+	return uu.userRepo.QueryAllUser()
+}
+
 func (uu *userUseCase) RenameUsername(oldUsername, newUsername string) error{
+	if err := uu.userRepo.CheckUsername(newUsername); err != nil {
+		return err
+	}
 	err := uu.userRepo.UpdateUsername(oldUsername, newUsername)
 	return err
 }
@@ -72,4 +79,8 @@ func (uu *userUseCase) UpdatePassword(username, password string) error{
 	}
 	err = uu.userRepo.UpdatePassword(username, hashPassword)
 	return err
+}
+
+func (uu *userUseCase) DeleteUser(username string) error {
+	return uu.userRepo.DeleteUser(username)
 }

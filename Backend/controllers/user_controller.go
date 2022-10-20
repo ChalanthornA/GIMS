@@ -111,6 +111,26 @@ func (uc *UserController) TestJWT(c *gin.Context) {
 	})
 }
 
+func (uc *UserController) QueryAllUser(c *gin.Context){
+	role, _ := c.Get("role")
+	if role != "admin"{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "only admin can do this",
+		})
+		return
+	}
+	users, err := uc.userUseCase.QueryAllUser()
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": users,
+	})
+}
+
 func (uc *UserController) RenameUsername(c *gin.Context) {
 	role, _ := c.Get("role")
 	if role != "admin" {
@@ -143,6 +163,26 @@ func (uc *UserController) UpdatePassword(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	if err := uc.userUseCase.UpdatePassword(username, password); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (uc *UserController) DeleteUser(c *gin.Context) {
+	role, _ := c.Get("role")
+	if role != "admin" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "only admin can do this",
+		})
+		return
+	}
+	username := c.Param("username")
+	if err := uc.userUseCase.DeleteUser(username); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

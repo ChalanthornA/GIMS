@@ -23,7 +23,7 @@ func NewDb() *pgxpool.Pool{
 }
 
 func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
-	createUserTableSql := `CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username VARCHAR(50), password VARCHAR(100), role VARCHAR(50));`
+	createUserTableSql := `CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username VARCHAR(50) UNIQUE, password VARCHAR(100), role VARCHAR(50));`
 	if _, err := dbpool.Exec(ctx, createUserTableSql); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create users table: %v\n", err)
 		os.Exit(1)
