@@ -18,7 +18,7 @@ func NewUserUseCase(ur domains.UserRepository) domains.UserUseCase{
 	}
 }
 
-func (uu *userUseCase) GenerateHashPassword(u *models.User) error{
+func (uu *userUseCase) GenerateHashPasswordAndReplaceInUserModel(u *models.User) error{
 	p := []byte(u.Password)
 	hashedPassword, err := bcrypt.GenerateFromPassword(p, bcrypt.DefaultCost)
 	if err != nil{
@@ -26,6 +26,12 @@ func (uu *userUseCase) GenerateHashPassword(u *models.User) error{
 	}
 	u.Password = string(hashedPassword)
 	return nil
+}
+
+func (uu *userUseCase) GenerateHashPassword(password string) (string, error){
+	p := []byte(password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(p, bcrypt.DefaultCost)
+	return string(hashedPassword), err
 }
 
 func (uu *userUseCase) RegisterAdmin(u *models.User, secret string) error{
@@ -36,26 +42,34 @@ func (uu *userUseCase) RegisterAdmin(u *models.User, secret string) error{
 		return err
 	}
 	u.Role = "admin"
-	err := uu.GenerateHashPassword(u)
-	if err != nil {
+	if err := uu.GenerateHashPasswordAndReplaceInUserModel(u); err != nil {
 		return err
 	}
-	if err := uu.userRepo.InsertUser(u); err != nil{
-		return err
-	}
-	return nil
+	err := uu.userRepo.InsertUser(u)
+	return err
 }
 
 func (uu *userUseCase) Register(u *models.User) error{
 	if err := uu.userRepo.CheckUsername(u.Username); err != nil{
 		return err
 	}
-	err := uu.GenerateHashPassword(u)
+	if err := uu.GenerateHashPasswordAndReplaceInUserModel(u); err != nil {
+		return err
+	}
+	err := uu.userRepo.InsertUser(u)
+	return err
+}
+
+func (uu *userUseCase) RenameUsername(oldUsername, newUsername string) error{
+	err := uu.userRepo.UpdateUsername(oldUsername, newUsername)
+	return err
+}
+
+func (uu *userUseCase) UpdatePassword(username, password string) error{
+	hashPassword, err := uu.GenerateHashPassword(password)
 	if err != nil {
 		return err
 	}
-	if err := uu.userRepo.InsertUser(u); err != nil{
-		return err
-	}
-	return nil
+	err = uu.userRepo.UpdatePassword(username, hashPassword)
+	return err
 }

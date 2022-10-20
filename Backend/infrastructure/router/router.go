@@ -14,7 +14,6 @@ func SetupRoutes(r *gin.Engine) {
 	userRepository := repositories.NewUserRepository(database.DB)
 	userUseCase := usecases.NewUserUseCase(userRepository)
 	userController := controllers.NewUserController(userUseCase)
-
 	auth := r.Group("/auth")
 	{
 		auth.POST("/registeradmin", userController.RegisterAdmin)
@@ -23,15 +22,19 @@ func SetupRoutes(r *gin.Engine) {
 		auth.Use(middlewares.AuthorizeJWT())
 		auth.POST("/register", userController.Register)
 		auth.GET("/profile", userController.TestJWT)
+		auth.PUT("/renameusername", userController.RenameUsername)
+		auth.PUT("/updatepassword", userController.UpdatePassword)
 	}
+
+	r.Use(middlewares.AuthorizeJWT())
 
 	goldRepository := repositories.NewGoldRepository(database.DB)
 	goldUseCase := usecases.NewGoldUseCase(goldRepository)
 	goldController := controllers.NewGoldController(goldUseCase)
-
-	inventory := r.Group("inventory")
+	inventory := r.Group("/inventory")
 	{
 		inventory.POST("/newgold", goldController.NewGold)
 		inventory.GET("/findgolddetailbycode/:code", goldController.FindGoldDetailByCode)
+		inventory.POST("/findgolddetailbydetail", goldController.FindGoldDetailByDetail)
 	}
 }

@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"context"
 	"time"
 
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
@@ -14,8 +13,7 @@ func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error{
 	}
 	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in) VALUES ($1, $2, $3, $4);`
 	loc, _ := time.LoadLocation("Asia/Jakarta")
-	ctx := context.Background()
-	if _, err := gr.db.Exec(ctx, insertGoldInventorySql, id, goldDetailID, "s", time.Now().In(loc)); err != nil {
+	if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, id, goldDetailID, "s", time.Now().In(loc)); err != nil {
 		return err
 	}
 	return nil

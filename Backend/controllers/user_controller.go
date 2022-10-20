@@ -47,7 +47,7 @@ func (uc *UserController) RegisterAdmin(c *gin.Context) {
 	})
 }
 
-func (uc *UserController) SignIn(c *gin.Context){
+func (uc *UserController) SignIn(c *gin.Context) {
 	body := new(models.User)
 	if err := c.BindJSON(body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -63,15 +63,15 @@ func (uc *UserController) SignIn(c *gin.Context){
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"username": user.Username,
-		"role": user.Role,
+		"username":    user.Username,
+		"role":        user.Role,
 		"accesstoken": token,
 	})
 }
 
 func (uc *UserController) Register(c *gin.Context) {
 	role, _ := c.Get("role")
-	if role != "admin"{
+	if role != "admin" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Only admin can register account",
 		})
@@ -84,7 +84,7 @@ func (uc *UserController) Register(c *gin.Context) {
 		})
 		return
 	}
-	if body.Role != "owner" && body.Role != "employee"{
+	if body.Role != "owner" && body.Role != "employee" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "role must be owner or employee",
 		})
@@ -102,11 +102,53 @@ func (uc *UserController) Register(c *gin.Context) {
 	})
 }
 
-func (uc *UserController) TestJWT(c *gin.Context){
+func (uc *UserController) TestJWT(c *gin.Context) {
 	username, _ := c.Get("username")
 	role, _ := c.Get("role")
 	c.JSON(http.StatusOK, gin.H{
 		"username": username,
-		"role": role,
+		"role":     role,
+	})
+}
+
+func (uc *UserController) RenameUsername(c *gin.Context) {
+	role, _ := c.Get("role")
+	if role != "admin" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "only admin can do this",
+		})
+		return
+	}
+	oldUsername := c.Query("oldusername")
+	newUsername := c.Query("newusername")
+	if err := uc.userUseCase.RenameUsername(oldUsername, newUsername); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (uc *UserController) UpdatePassword(c *gin.Context) {
+	role, _ := c.Get("role")
+	if role != "admin" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "only admin can do this",
+		})
+		return
+	}
+	username := c.Query("username")
+	password := c.Query("password")
+	if err := uc.userUseCase.UpdatePassword(username, password); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
 	})
 }

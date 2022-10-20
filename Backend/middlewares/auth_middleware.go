@@ -21,6 +21,10 @@ func AuthorizeJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		const BEARER_SCHEMA = "Bearer "
 		authHeader := c.GetHeader("Authorization")
+		if len(authHeader) == 0{
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 		tokenString := authHeader[len(BEARER_SCHEMA):]
 		token, err := ValidateToken(tokenString)
 		if token.Valid {
