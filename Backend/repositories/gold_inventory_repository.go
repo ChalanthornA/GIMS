@@ -6,7 +6,7 @@ import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
 )
 
-func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error{
+func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error {
 	id, err := database.GenerateUUID()
 	if err != nil {
 		return err
@@ -17,4 +17,14 @@ func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error{
 		return err
 	}
 	return nil
+}
+
+func (gr *goldRepository) UpdateGoldInventoryStatus(goldInventoryID uint32, status string) error {
+	updateGoldInventoryStatus := `UPDATE gold_inventories SET status = $1 WHERE gold_inventory_id = $2`
+	s := "s"
+	if status == "s" {
+		s = "f"
+	}
+	_, err := gr.db.Exec(gr.ctx, updateGoldInventoryStatus, s, goldInventoryID)
+	return err
 }

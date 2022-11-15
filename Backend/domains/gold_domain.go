@@ -9,6 +9,8 @@ type GoldUseCase interface{
 	GetAllGoldDetail() ([]models.GoldDetail, error)
 	FindGoldDetailByCode(code string) ([]models.GoldDetail, error)
 	FindGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error)
+	EditGoldDetail(goldDetail *models.GoldDetail) error
+	GetAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
 }
 
 type GoldRepository interface{
@@ -18,4 +20,6 @@ type GoldRepository interface{
 	QueryGoldDetailByCode(code string) ([]models.GoldDetail, error)
 	CheckGoldDetail(g *models.GoldDetail) error
 	QueryGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error)
+	UpdateGoldDetail(goldDetail *models.GoldDetail) error
+	QueryAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
 }

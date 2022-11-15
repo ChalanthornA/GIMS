@@ -103,3 +103,35 @@ func (gc *goldController) FindGoldDetailByDetail(c *gin.Context) {
 		"data": res,
 	})
 }
+
+func (gc *goldController) EditGoldDetail(c *gin.Context) {
+	goldDetail := new(models.GoldDetail)
+	if err := c.BindJSON(goldDetail); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.EditGoldDetail(goldDetail); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (gc *goldController) GetAllGoldDetailJoinInventory(c *gin.Context) {
+	res, err := gc.goldUseCase.GetAllGoldDetailJoinInventory()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": res,
+	})
+}

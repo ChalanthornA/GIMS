@@ -11,6 +11,13 @@ import (
 
 func SetupRoutes(r *gin.Engine) {
 	r.Use(middlewares.CORSMiddleware())
+	setUpAuthRoute(r)
+
+	r.Use(middlewares.AuthorizeJWT())
+	setUpInventoryRoute(r)
+}
+
+func setUpAuthRoute(r *gin.Engine) {
 	userRepository := repositories.NewUserRepository(database.DB)
 	userUseCase := usecases.NewUserUseCase(userRepository)
 	userController := controllers.NewUserController(userUseCase)
@@ -27,9 +34,9 @@ func SetupRoutes(r *gin.Engine) {
 		auth.GET("/queryalluser", userController.QueryAllUser)
 		auth.DELETE("/deleteuser/:username", userController.DeleteUser)
 	}
+}
 
-	r.Use(middlewares.AuthorizeJWT())
-
+func setUpInventoryRoute(r *gin.Engine) {
 	goldRepository := repositories.NewGoldRepository(database.DB)
 	goldUseCase := usecases.NewGoldUseCase(goldRepository)
 	goldController := controllers.NewGoldController(goldUseCase)
@@ -42,5 +49,7 @@ func SetupRoutes(r *gin.Engine) {
 		inventory.POST("/newgold", goldController.NewGold)
 		inventory.POST("/addgold", goldController.AddGold)
 		inventory.GET("/getallgolddetail", goldController.GetAllGoldDetail)
+		inventory.PUT("/editgolddetail", goldController.EditGoldDetail)
+		inventory.GET("/getalldetailjoininventory", goldController.GetAllGoldDetailJoinInventory)
 	}
 }

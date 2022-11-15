@@ -57,3 +57,11 @@ func (gu *goldUseCase) FindGoldDetailByDetail(g *models.GoldDetail) ([]models.Go
 	details, err := gu.goldRepo.QueryGoldDetailByDetail(g)
 	return details, err
 }
+
+func (gu *goldUseCase) EditGoldDetail(goldDetail *models.GoldDetail) error{
+	return gu.goldRepo.UpdateGoldDetail(goldDetail)
+}
+
+func (gu *goldUseCase) GetAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error) {
+	return gu.goldRepo.QueryAllGoldDetailJoinInventory()
+}
