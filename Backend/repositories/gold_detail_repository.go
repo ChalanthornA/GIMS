@@ -10,16 +10,16 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-type goldRepository struct{
+type goldRepository struct {
 	ctx context.Context
-	db *pgxpool.Pool
+	db  *pgxpool.Pool
 }
 
-func NewGoldRepository(db *pgxpool.Pool) domains.GoldRepository{
+func NewGoldRepository(db *pgxpool.Pool) domains.GoldRepository {
 	return &goldRepository{ctx: context.Background(), db: db}
 }
 
-func (gr *goldRepository) NewGoldDetail(g *models.GoldDetail) (uint32, error){
+func (gr *goldRepository) NewGoldDetail(g *models.GoldDetail) (uint32, error) {
 	id, err := database.GenerateUUID()
 	if err != nil {
 		return 0, err
@@ -32,7 +32,7 @@ func (gr *goldRepository) NewGoldDetail(g *models.GoldDetail) (uint32, error){
 	return id, nil
 }
 
-func (gr *goldRepository) CheckGoldDetail(g *models.GoldDetail) error{
+func (gr *goldRepository) CheckGoldDetail(g *models.GoldDetail) error {
 	queryGoldDetailByDetail := `
 		SELECT * 
 		FROM gold_details
@@ -43,18 +43,35 @@ func (gr *goldRepository) CheckGoldDetail(g *models.GoldDetail) error{
 		return err
 	}
 	detail := new(models.GoldDetail)
-	for rows.Next(){
-		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.OtherDetail); err != nil{
+	for rows.Next() {
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.OtherDetail); err != nil {
 			return err
 		}
 	}
-	if detail.Type != ""{
+	if detail.Type != "" {
 		return fmt.Errorf("this detail is already exist see code %s", detail.Code)
 	}
 	return nil
 }
 
-func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetail, error){
+func (gr *goldRepository) QueryAllGoldDetail() ([]models.GoldDetail, error) {
+	var res []models.GoldDetail
+	queryAllGoldDetail := `SELECT * FROM gold_details;`
+	rows, err := gr.db.Query(gr.ctx, queryAllGoldDetail)
+	if err != nil {
+		return res, err
+	}
+	for rows.Next() {
+		var detail models.GoldDetail
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.OtherDetail); err != nil {
+			return res, err
+		}
+		res = append(res, detail)
+	}
+	return res, nil
+}
+
+func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetail, error) {
 	var res []models.GoldDetail
 	queryGoldDetailByCodeSql := `
 		SELECT *
@@ -65,9 +82,9 @@ func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetai
 	if err != nil {
 		return res, err
 	}
-	for rows.Next(){
+	for rows.Next() {
 		var detail models.GoldDetail
-		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.OtherDetail); err != nil{
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.OtherDetail); err != nil {
 			return res, err
 		}
 		res = append(res, detail)
@@ -75,16 +92,16 @@ func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetai
 	return res, nil
 }
 
-func (gr *goldRepository)QueryGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error){
+func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error) {
 	var res []models.GoldDetail
 	queryAllGoldDetailSql := `SELECT * FROM gold_details;`
 	rows, err := gr.db.Query(gr.ctx, queryAllGoldDetailSql)
 	if err != nil {
 		return res, err
 	}
-	for rows.Next(){
+	for rows.Next() {
 		var goldDetail models.GoldDetail
-		if err = rows.Scan(&goldDetail.GoldDetailID, &goldDetail.Code, &goldDetail.Type, &goldDetail.Detail, &goldDetail.Weight, &goldDetail.GoldPercent, &goldDetail.GoldSmithFee, &goldDetail.Picture, &goldDetail.OtherDetail); err != nil{
+		if err = rows.Scan(&goldDetail.GoldDetailID, &goldDetail.Code, &goldDetail.Type, &goldDetail.Detail, &goldDetail.Weight, &goldDetail.GoldPercent, &goldDetail.GoldSmithFee, &goldDetail.Picture, &goldDetail.OtherDetail); err != nil {
 			return res, err
 		}
 		if g.Type != "" {

@@ -35,8 +35,12 @@ func SetupRoutes(r *gin.Engine) {
 	goldController := controllers.NewGoldController(goldUseCase)
 	inventory := r.Group("/inventory")
 	{
-		inventory.POST("/newgold", goldController.NewGold)
 		inventory.GET("/findgolddetailbycode/:code", goldController.FindGoldDetailByCode)
 		inventory.POST("/findgolddetailbydetail", goldController.FindGoldDetailByDetail)
+
+		inventory.Use(middlewares.AuthorizeAdminOrOwner())
+		inventory.POST("/newgold", goldController.NewGold)
+		inventory.POST("/addgold", goldController.AddGold)
+		inventory.GET("/getallgolddetail", goldController.GetAllGoldDetail)
 	}
 }

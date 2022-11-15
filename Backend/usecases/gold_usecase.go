@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"strconv"
+
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 )
@@ -11,6 +13,11 @@ type goldUseCase struct {
 
 func NewGoldUseCase(gr domains.GoldRepository) domains.GoldUseCase {
 	return &goldUseCase{gr}
+}
+
+func (gu *goldUseCase) ConvertIDStringToUint32(id string) (uint32, error) {
+	goldDetailID, err := strconv.ParseUint(id, 10, 32)
+	return uint32(goldDetailID), err
 }
 
 func (gu *goldUseCase) NewGold(goldDetail *models.GoldDetail) error {
@@ -26,6 +33,19 @@ func (gu *goldUseCase) NewGold(goldDetail *models.GoldDetail) error {
 		return err
 	}
 	return nil
+}
+
+func (gu *goldUseCase) AddGold(goldDetailID uint32) error {
+	err := gu.goldRepo.NewGoldInventory(goldDetailID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (gu *goldUseCase) GetAllGoldDetail() ([]models.GoldDetail, error) {
+	res, err := gu.goldRepo.QueryAllGoldDetail()
+	return res, err
 }
 
 func (gu *goldUseCase) FindGoldDetailByCode(code string) ([]models.GoldDetail, error) {

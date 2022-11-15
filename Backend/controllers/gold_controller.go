@@ -19,13 +19,6 @@ func NewGoldController(gu domains.GoldUseCase) *goldController {
 }
 
 func (gc *goldController) NewGold(c *gin.Context) {
-	role, _ := c.Get("role")
-	if role != "admin" && role != "owner" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "only admin or owner can do this",
-		})
-		return
-	}
 	newGold := new(models.GoldDetail)
 	if err := c.BindJSON(newGold); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -41,6 +34,39 @@ func (gc *goldController) NewGold(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
+	})
+}
+
+func (gc *goldController) AddGold(c *gin.Context) {
+	id := c.Query("id")
+	goldDetailID, err := gc.goldUseCase.ConvertIDStringToUint32(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.AddGold(goldDetailID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (gc *goldController) GetAllGoldDetail(c *gin.Context) {
+	goldDetails, err := gc.goldUseCase.GetAllGoldDetail()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": goldDetails,
 	})
 }
 
