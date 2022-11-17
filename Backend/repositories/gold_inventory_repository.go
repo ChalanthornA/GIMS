@@ -11,9 +11,9 @@ func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error {
 	if err != nil {
 		return err
 	}
-	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in) VALUES ($1, $2, $3, $4);`
+	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in, date_sold) VALUES ($1, $2, $3, $4, $5);`
 	loc, _ := time.LoadLocation("Asia/Jakarta")
-	if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, id, goldDetailID, "s", time.Now().In(loc)); err != nil {
+	if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, id, goldDetailID, "safe", time.Now().In(loc), time.Time{}); err != nil {
 		return err
 	}
 	return nil
@@ -21,9 +21,9 @@ func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error {
 
 func (gr *goldRepository) UpdateGoldInventoryStatus(goldInventoryID uint32, status string) error {
 	updateGoldInventoryStatus := `UPDATE gold_inventories SET status = $1 WHERE gold_inventory_id = $2`
-	s := "s"
-	if status == "s" {
-		s = "f"
+	s := "safe"
+	if status == "safe" {
+		s = "front"
 	}
 	_, err := gr.db.Exec(gr.ctx, updateGoldInventoryStatus, s, goldInventoryID)
 	return err

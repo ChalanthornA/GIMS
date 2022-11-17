@@ -65,3 +65,7 @@ func (gu *goldUseCase) EditGoldDetail(goldDetail *models.GoldDetail) error{
 func (gu *goldUseCase) GetAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error) {
 	return gu.goldRepo.QueryAllGoldDetailJoinInventory()
 }
+
+func (gu *goldUseCase) SetStatusGoldDetailToDelete(goldDetailID uint32) error{
+	return gu.goldRepo.SetStatusGoldDetail(goldDetailID, "delete")
+}

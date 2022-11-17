@@ -135,3 +135,23 @@ func (gc *goldController) GetAllGoldDetailJoinInventory(c *gin.Context) {
 		"data": res,
 	})
 }
+
+func (gc *goldController) SetStatusGoldDetailToDelete(c *gin.Context) {
+	idString := c.Param("id")
+	idUint32, err := gc.goldUseCase.ConvertIDStringToUint32(idString)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.SetStatusGoldDetailToDelete(idUint32); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}

@@ -9,6 +9,7 @@ type GoldDetailJoinInventory struct {
 	GoldPercent  float64         `json:"gold_percent"`
 	GoldSmithFee float64         `json:"gold_smith_fee"`
 	Picture      string          `json:"picture"`
+	Status       string          `json:"status"`
 	OtherDetail  string          `json:"other_detail"`
 	Inventories  []GoldInventory `json:"inventories"`
 }

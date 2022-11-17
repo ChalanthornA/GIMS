@@ -39,6 +39,7 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 			gold_percent FLOAT, 
 			gold_smith_fee FLOAT, 
 			picture VARCHAR(100), 
+			status VARCHAR(100),
 			other_detail VARCHAR(100),
 			PRIMARY KEY (gold_detail_id)
 		);
@@ -54,6 +55,7 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 			gold_detail_id BIGINT NOT NULL,
 			status VARCHAR(50), 
 			date_in TIMESTAMPTZ NOT NULL,
+			date_sold TIMESTAMPTZ,
 			PRIMARY KEY (gold_inventory_id),
 			FOREIGN KEY (gold_detail_id) REFERENCES gold_details(gold_detail_id)
 		);
