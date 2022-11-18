@@ -28,19 +28,16 @@ func (gu *goldUseCase) NewGold(goldDetail *models.GoldDetail) error {
 	if err != nil {
 		return err
 	}
-	err = gu.goldRepo.NewGoldInventory(id)
+	err = gu.goldRepo.NewGoldInventory(id, 1)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (gu *goldUseCase) AddGold(goldDetailID uint32) error {
-	err := gu.goldRepo.NewGoldInventory(goldDetailID)
-	if err != nil {
-		return err
-	}
-	return nil
+func (gu *goldUseCase) AddGold(goldDetailID uint32, quantity int) error {
+	err := gu.goldRepo.NewGoldInventory(goldDetailID, quantity)
+	return err
 }
 
 func (gu *goldUseCase) GetAllGoldDetail() ([]models.GoldDetail, error) {

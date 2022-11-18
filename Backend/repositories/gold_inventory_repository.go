@@ -6,15 +6,17 @@ import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
 )
 
-func (gr *goldRepository) NewGoldInventory(goldDetailID uint32) error {
-	id, err := database.GenerateUUID()
-	if err != nil {
-		return err
-	}
+func (gr *goldRepository) NewGoldInventory(goldDetailID uint32, quantity int) error {
 	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in, date_sold) VALUES ($1, $2, $3, $4, $5);`
-	loc, _ := time.LoadLocation("Asia/Jakarta")
-	if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, id, goldDetailID, "safe", time.Now().In(loc), time.Time{}); err != nil {
-		return err
+	for i := 0; i < quantity; i++{
+		id, err := database.GenerateUUID()
+		if err != nil {
+			return err
+		}
+		loc, _ := time.LoadLocation("Asia/Jakarta")
+		if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, id, goldDetailID, "safe", time.Now().In(loc), time.Time{}); err != nil {
+			return err
+		}
 	}
 	return nil
 }
