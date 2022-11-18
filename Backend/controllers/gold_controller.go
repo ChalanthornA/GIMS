@@ -38,7 +38,7 @@ func (gc *goldController) NewGold(c *gin.Context) {
 }
 
 func (gc *goldController) AddGold(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 	goldDetailID, err := gc.goldUseCase.ConvertIDStringToUint32(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -146,6 +146,26 @@ func (gc *goldController) SetStatusGoldDetailToDelete(c *gin.Context) {
 		return
 	}
 	if err := gc.goldUseCase.SetStatusGoldDetailToDelete(idUint32); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (gc *goldController) SetStatusGoldDetailToNormal(c *gin.Context) {
+	idString := c.Param("id")
+	idUint32, err := gc.goldUseCase.ConvertIDStringToUint32(idString)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.SetStatusGoldDetailToNormal(idUint32); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

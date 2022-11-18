@@ -47,10 +47,11 @@ func setUpInventoryRoute(r *gin.Engine) {
 
 		inventory.Use(middlewares.AuthorizeAdminOrOwner())
 		inventory.POST("/newgold", goldController.NewGold)
-		inventory.POST("/addgold", goldController.AddGold)
+		inventory.POST("/addgold/:id", goldController.AddGold)
 		inventory.GET("/getallgolddetail", goldController.GetAllGoldDetail)
 		inventory.PUT("/editgolddetail", goldController.EditGoldDetail)
 		inventory.GET("/getalldetailjoininventory", goldController.GetAllGoldDetailJoinInventory)
 		inventory.PATCH("/deletegolddetail/:id", goldController.SetStatusGoldDetailToDelete)
+		inventory.PATCH("/getbackgolddetail/:id", goldController.SetStatusGoldDetailToNormal)
 	}
 }
