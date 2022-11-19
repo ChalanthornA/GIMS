@@ -8,4 +8,5 @@ type GoldInventory struct {
 	Status          string    `json:"status"` //safe or front or sold
 	DateIn          time.Time `json:"date_in"`
 	DateSold        time.Time `json:"date_sold"`
+	Note            string    `json:"note"`
 }

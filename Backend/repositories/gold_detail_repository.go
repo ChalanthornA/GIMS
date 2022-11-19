@@ -25,8 +25,8 @@ func (gr *goldRepository) NewGoldDetail(g *models.GoldDetail) (uint32, error) {
 		return 0, err
 	}
 	g.GoldDetailID = id
-	insertGoldDetailSql := `INSERT INTO gold_details (gold_detail_id, code, type, detail, weight, gold_percent, gold_smith_fee, picture, status, other_detail) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`
-	if _, err := gr.db.Exec(gr.ctx, insertGoldDetailSql, g.GoldDetailID, g.Code, g.Type, g.Detail, g.Weight, g.GoldPercent, g.GoldSmithFee, g.Picture, "normal", g.OtherDetail); err != nil {
+	insertGoldDetailSql := `INSERT INTO gold_details (gold_detail_id, code, type, detail, weight, gold_percent, gold_smith_fee, picture, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
+	if _, err := gr.db.Exec(gr.ctx, insertGoldDetailSql, g.GoldDetailID, g.Code, g.Type, g.Detail, g.Weight, g.GoldPercent, g.GoldSmithFee, g.Picture, "normal"); err != nil {
 		return 0, err
 	}
 	return id, nil
@@ -36,15 +36,15 @@ func (gr *goldRepository) CheckGoldDetail(g *models.GoldDetail) error {
 	queryGoldDetailByDetail := `
 		SELECT * 
 		FROM gold_details
-		WHERE code = $1 AND type = $2 AND detail = $3 AND weight = $4 AND gold_percent = $5 AND gold_smith_fee = $6 AND status = $7 AND other_detail = $8;
+		WHERE code = $1 AND type = $2 AND detail = $3 AND weight = $4 AND gold_percent = $5 AND gold_smith_fee = $6 AND status = $7;
 	`
-	rows, err := gr.db.Query(gr.ctx, queryGoldDetailByDetail, g.Code, g.Type, g.Detail, g.Weight, g.GoldPercent, g.GoldSmithFee, "normal", g.OtherDetail)
+	rows, err := gr.db.Query(gr.ctx, queryGoldDetailByDetail, g.Code, g.Type, g.Detail, g.Weight, g.GoldPercent, g.GoldSmithFee, "normal")
 	if err != nil {
 		return err
 	}
 	detail := new(models.GoldDetail)
 	for rows.Next() {
-		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status, &detail.OtherDetail); err != nil {
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status); err != nil {
 			return err
 		}
 	}
@@ -63,7 +63,7 @@ func (gr *goldRepository) QueryAllGoldDetail() ([]models.GoldDetail, error) {
 	}
 	for rows.Next() {
 		var detail models.GoldDetail
-		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status, &detail.OtherDetail); err != nil {
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status); err != nil {
 			return res, err
 		}
 		res = append(res, detail)
@@ -84,7 +84,7 @@ func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetai
 	}
 	for rows.Next() {
 		var detail models.GoldDetail
-		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status, &detail.OtherDetail); err != nil {
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status, &detail); err != nil {
 			return res, err
 		}
 		res = append(res, detail)
@@ -101,7 +101,7 @@ func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]model
 	}
 	for rows.Next() {
 		var goldDetail models.GoldDetail
-		if err = rows.Scan(&goldDetail.GoldDetailID, &goldDetail.Code, &goldDetail.Type, &goldDetail.Detail, &goldDetail.Weight, &goldDetail.GoldPercent, &goldDetail.GoldSmithFee, &goldDetail.Picture, &goldDetail.Status, &goldDetail.OtherDetail); err != nil {
+		if err = rows.Scan(&goldDetail.GoldDetailID, &goldDetail.Code, &goldDetail.Type, &goldDetail.Detail, &goldDetail.Weight, &goldDetail.GoldPercent, &goldDetail.GoldSmithFee, &goldDetail.Picture, &goldDetail.Status); err != nil {
 			return res, err
 		}
 		if g.Type != "" {
@@ -124,11 +124,6 @@ func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]model
 				continue
 			}
 		}
-		if g.OtherDetail != "" {
-			if g.OtherDetail != goldDetail.OtherDetail {
-				continue
-			}
-		}
 		if g.Detail != "" {
 			if g.Detail != goldDetail.Detail {
 				continue
@@ -142,10 +137,10 @@ func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]model
 func (gr *goldRepository) UpdateGoldDetail(goldDetail *models.GoldDetail) error{
 	updateGoldDetailSql := `
 		UPDATE gold_details
-		SET code = $1, type = $2, detail = $3, weight = $4, gold_percent = $5, gold_smith_fee = $6, other_detail = $7
-		WHERE gold_detail_id = $8;
+		SET code = $1, type = $2, detail = $3, weight = $4, gold_percent = $5, gold_smith_fee = $6
+		WHERE gold_detail_id = $7;
 	`
-	_, err := gr.db.Exec(gr.ctx, updateGoldDetailSql, goldDetail.Code, goldDetail.Type, goldDetail.Detail, goldDetail.Weight, goldDetail.GoldPercent, goldDetail.GoldSmithFee, goldDetail.OtherDetail, goldDetail.GoldDetailID)
+	_, err := gr.db.Exec(gr.ctx, updateGoldDetailSql, goldDetail.Code, goldDetail.Type, goldDetail.Detail, goldDetail.Weight, goldDetail.GoldPercent, goldDetail.GoldSmithFee, goldDetail.GoldDetailID)
 	return err
 }
 

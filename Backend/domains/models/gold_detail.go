@@ -10,5 +10,4 @@ type GoldDetail struct {
 	GoldSmithFee float64 `json:"gold_smith_fee"`
 	Picture      string  `json:"picture"`
 	Status       string  `json:"status"` //normal or delete
-	OtherDetail  string  `json:"other_detail"`
 }

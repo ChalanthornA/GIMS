@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
@@ -39,23 +38,14 @@ func (gc *goldController) NewGold(c *gin.Context) {
 }
 
 func (gc *goldController) AddGold(c *gin.Context) {
-	id := c.Query("golddetailid")
-	quantity := c.Query("quantity")
-	goldDetailID, err := gc.goldUseCase.ConvertIDStringToUint32(id)
-	if err != nil {
+	newGoldInventory := new(models.InputNewGoldInventory)
+	if err := c.BindJSON(newGoldInventory); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	intQuantity, err := strconv.Atoi(quantity)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-	if err := gc.goldUseCase.AddGold(goldDetailID, intQuantity); err != nil {
+	if err := gc.goldUseCase.AddGold(newGoldInventory); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

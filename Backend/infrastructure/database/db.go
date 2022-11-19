@@ -40,7 +40,6 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 			gold_smith_fee FLOAT, 
 			picture VARCHAR(100), 
 			status VARCHAR(100),
-			other_detail VARCHAR(100),
 			PRIMARY KEY (gold_detail_id)
 		);
 	`
@@ -55,10 +54,11 @@ func inItTable(dbpool *pgxpool.Pool, ctx context.Context){
 			gold_detail_id BIGINT NOT NULL,
 			status VARCHAR(50), 
 			date_in TIMESTAMPTZ NOT NULL,
-			date_sold TIMESTAMPTZ,
-			PRIMARY KEY (gold_inventory_id),
+			date_sold TIMESTAMPTZ NOT NULL,
+			note VARCHAR(300),
 			FOREIGN KEY (gold_detail_id) REFERENCES gold_details(gold_detail_id)
 		);
+		SELECT create_hypertable('gold_inventories', 'date_sold', if_not_exists => TRUE);
 	`
 	if _, err := dbpool.Exec(ctx, createGoldInventoryTableSql); err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create gold_details table: %v\n", err)

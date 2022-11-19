@@ -12,10 +12,9 @@ func (gr *goldRepository) QueryAllGoldDetailJoinInventory() ([]models.GoldDetail
 	}
 	for rows.Next() {
 		var gold models.GoldDetailJoinInventory
-		if err = rows.Scan(&gold.GoldDetailID, &gold.Code, &gold.Type, &gold.Detail, &gold.Weight, &gold.GoldPercent, &gold.GoldSmithFee, &gold.Picture, &gold.Status, &gold.OtherDetail); err != nil {
+		if err = rows.Scan(&gold.GoldDetailID, &gold.Code, &gold.Type, &gold.Detail, &gold.Weight, &gold.GoldPercent, &gold.GoldSmithFee, &gold.Picture, &gold.Status); err != nil {
 			return golds, err
 		}
-		//query gold_inventory for append to array
 		var inventories []models.GoldInventory
 		rowsGoldInventories, err2 := gr.db.Query(gr.ctx, queryGoldInventoryByGoldDetailIDSql, gold.GoldDetailID)
 		if err2 != nil {
@@ -23,7 +22,7 @@ func (gr *goldRepository) QueryAllGoldDetailJoinInventory() ([]models.GoldDetail
 		}
 		for rowsGoldInventories.Next() {
 			var inventory models.GoldInventory
-			if err = rowsGoldInventories.Scan(&inventory.GoldInventoryID, &inventory.GoldDetailID, &inventory.Status, &inventory.DateIn, &inventory.DateSold); err != nil {
+			if err = rowsGoldInventories.Scan(&inventory.GoldInventoryID, &inventory.GoldDetailID, &inventory.Status, &inventory.DateIn, &inventory.DateSold, &inventory.Note); err != nil {
 				return golds, err
 			}
 			inventories = append(inventories, inventory)
