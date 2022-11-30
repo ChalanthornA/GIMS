@@ -53,5 +53,6 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.GET("/getalldetailjoininventory", goldController.GetAllGoldDetailJoinInventory)
 		inventory.PATCH("/deletegolddetail/:id", goldController.SetStatusGoldDetailToDelete)
 		inventory.PATCH("/getbackgolddetail/:id", goldController.SetStatusGoldDetailToNormal)
+		inventory.PATCH("/setgoldinventorystatus", goldController.SetStatusGoldInventory)
 	}
 }

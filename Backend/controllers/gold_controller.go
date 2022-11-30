@@ -19,7 +19,7 @@ func NewGoldController(gu domains.GoldUseCase) *goldController {
 }
 
 func (gc *goldController) NewGold(c *gin.Context) {
-	newGold := new(models.GoldDetail)
+	newGold := new(models.InputNewGoldDetail)
 	if err := c.BindJSON(newGold); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -165,6 +165,25 @@ func (gc *goldController) SetStatusGoldDetailToNormal(c *gin.Context) {
 		return
 	}
 	if err := gc.goldUseCase.SetStatusGoldDetailToNormal(idUint32); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (gc *goldController) SetStatusGoldInventory(c *gin.Context) {
+	input := new(models.InputSetStatusGoldInventory)
+	if err := c.BindJSON(input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.SetStatusGoldInventory(input.GoldInventoryID, input.Status); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

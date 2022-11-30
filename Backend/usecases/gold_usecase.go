@@ -20,15 +20,16 @@ func (gu *goldUseCase) ConvertIDStringToUint32(id string) (uint32, error) {
 	return uint32(goldDetailID), err
 }
 
-func (gu *goldUseCase) NewGold(goldDetail *models.GoldDetail) error {
-	if err := gu.goldRepo.CheckGoldDetail(goldDetail); err != nil {
+func (gu *goldUseCase) NewGold(g *models.InputNewGoldDetail) error {
+	newGoldDetail := &models.GoldDetail{Code: g.Code, Type: g.Type, Detail: g.Detail, Weight: g.Weight, GoldPercent: g.GoldPercent, GoldSmithFee: g.GoldSmithFee, Picture: g.Picture, Status: g.Status}
+	if err := gu.goldRepo.CheckGoldDetail(newGoldDetail); err != nil {
 		return err
 	}
-	id, err := gu.goldRepo.NewGoldDetail(goldDetail)
+	id, err := gu.goldRepo.NewGoldDetail(newGoldDetail)
 	if err != nil {
 		return err
 	}
-	newGoldInventory := &models.InputNewGoldInventory{GoldDetailID: id, Quantity: 1}
+	newGoldInventory := &models.InputNewGoldInventory{GoldDetailID: id, Note: g.Note, Quantity: g.Quantity}
 	err = gu.goldRepo.NewGoldInventory(newGoldInventory)
 	if err != nil {
 		return err
@@ -56,7 +57,7 @@ func (gu *goldUseCase) FindGoldDetailByDetail(g *models.GoldDetail) ([]models.Go
 	return details, err
 }
 
-func (gu *goldUseCase) EditGoldDetail(goldDetail *models.GoldDetail) error{
+func (gu *goldUseCase) EditGoldDetail(goldDetail *models.GoldDetail) error {
 	return gu.goldRepo.UpdateGoldDetail(goldDetail)
 }
 
@@ -70,4 +71,8 @@ func (gu *goldUseCase) SetStatusGoldDetailToDelete(goldDetailID uint32) error {
 
 func (gu *goldUseCase) SetStatusGoldDetailToNormal(goldDetailID uint32) error {
 	return gu.goldRepo.SetStatusGoldDetail(goldDetailID, "normal")
+}
+
+func (gu *goldUseCase) SetStatusGoldInventory(goldInventoryID uint32, status string) error {
+	return gu.goldRepo.UpdateGoldInventoryStatus(goldInventoryID, status)
 }

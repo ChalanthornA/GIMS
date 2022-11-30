@@ -3,7 +3,7 @@ package domains
 import "github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 
 type GoldUseCase interface{
-	NewGold(goldDetail *models.GoldDetail) error
+	NewGold(goldDetail *models.InputNewGoldDetail) error
 	ConvertIDStringToUint32(id string) (uint32, error)
 	AddGold(newGoldInventory *models.InputNewGoldInventory) error
 	GetAllGoldDetail() ([]models.GoldDetail, error)
@@ -13,6 +13,7 @@ type GoldUseCase interface{
 	GetAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
 	SetStatusGoldDetailToDelete(goldDetailID uint32) error
 	SetStatusGoldDetailToNormal(goldDetailID uint32) error
+	SetStatusGoldInventory(goldInventoryID uint32, status string) error
 }
 
 type GoldRepository interface{
@@ -25,4 +26,5 @@ type GoldRepository interface{
 	UpdateGoldDetail(goldDetail *models.GoldDetail) error
 	QueryAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
 	SetStatusGoldDetail(goldDetailID uint32, setStatus string) error
+	UpdateGoldInventoryStatus(goldInventoryID uint32, status string) error
 }

@@ -24,10 +24,6 @@ func (gr *goldRepository) NewGoldInventory(newGoldInventory *models.InputNewGold
 
 func (gr *goldRepository) UpdateGoldInventoryStatus(goldInventoryID uint32, status string) error {
 	updateGoldInventoryStatus := `UPDATE gold_inventories SET status = $1 WHERE gold_inventory_id = $2`
-	s := "safe"
-	if status == "safe" {
-		s = "front"
-	}
-	_, err := gr.db.Exec(gr.ctx, updateGoldInventoryStatus, s, goldInventoryID)
+	_, err := gr.db.Exec(gr.ctx, updateGoldInventoryStatus, status, goldInventoryID)
 	return err
 }
