@@ -56,3 +56,14 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.PATCH("/setgoldinventorystatus", goldController.SetStatusGoldInventory)
 	}
 }
+
+// func setUpTransactionRoute(r *gin.Engine) {
+// 	goldRepository := repositories.NewGoldRepository(database.DB)
+// 	transactionRepository := repositories.NewTransactionRepository(database.DB)
+// 	transactionUsecase := usecases.NewTransactionUsecase(transactionRepository, goldRepository)
+// 	transactionController := controllers.NewTransactionController(transactionUsecase)
+// 	transaction := r.Group("/transaction")
+// 	{
+
+// 	}
+// }
