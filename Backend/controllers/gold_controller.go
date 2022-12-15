@@ -9,12 +9,12 @@ import (
 )
 
 type goldController struct {
-	goldUseCase domains.GoldUseCase
+	goldUseCase  domains.GoldUseCase
 }
 
 func NewGoldController(gu domains.GoldUseCase) *goldController {
 	return &goldController{
-		goldUseCase: gu,
+		goldUseCase:  gu,
 	}
 }
 

@@ -5,7 +5,7 @@ import "github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 func (gr *goldRepository) QueryAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error) {
 	var golds []models.GoldDetailJoinInventory
 	queryAllGoldDetailSql := `SELECT * FROM gold_details WHERE status = $1;`
-	queryGoldInventoryByGoldDetailIDSql := `SELECT * FROM gold_inventories WHERE gold_detail_id = $1;`
+	queryGoldInventoryByGoldDetailIDSql := `SELECT * FROM gold_inventories WHERE gold_detail_id = $1 AND status != $2;`
 	rows, err := gr.db.Query(gr.ctx, queryAllGoldDetailSql, "normal")
 	if err != nil {
 		return golds, err
@@ -16,7 +16,7 @@ func (gr *goldRepository) QueryAllGoldDetailJoinInventory() ([]models.GoldDetail
 			return golds, err
 		}
 		var inventories []models.GoldInventory
-		rowsGoldInventories, err2 := gr.db.Query(gr.ctx, queryGoldInventoryByGoldDetailIDSql, gold.GoldDetailID)
+		rowsGoldInventories, err2 := gr.db.Query(gr.ctx, queryGoldInventoryByGoldDetailIDSql, gold.GoldDetailID, "sold")
 		if err2 != nil {
 			return golds, err2
 		}

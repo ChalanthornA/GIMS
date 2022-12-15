@@ -20,6 +20,7 @@ type GoldRepository interface{
 	NewGoldDetail(g *models.GoldDetail) (uint32, error)
 	NewGoldInventory(newGoldInventory *models.InputNewGoldInventory) error
 	QueryAllGoldDetail() ([]models.GoldDetail, error)
+	QueryGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error)
 	QueryGoldDetailByCode(code string) ([]models.GoldDetail, error)
 	CheckGoldDetail(g *models.GoldDetail) error
 	QueryGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error)
@@ -27,4 +28,5 @@ type GoldRepository interface{
 	QueryAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
 	SetStatusGoldDetail(goldDetailID uint32, setStatus string) error
 	UpdateGoldInventoryStatus(goldInventoryID uint32, status string) error
+	CheckGoldInventoryByGoldInventoryID(id uint32) (models.GoldInventory, error)
 }

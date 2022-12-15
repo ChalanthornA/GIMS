@@ -20,13 +20,9 @@ func NewGoldRepository(db *pgxpool.Pool) domains.GoldRepository {
 }
 
 func (gr *goldRepository) NewGoldDetail(g *models.GoldDetail) (uint32, error) {
-	id, err := database.GenerateUUID()
-	if err != nil {
-		return 0, err
-	}
-	g.GoldDetailID = id
+	id := database.GenerateUUID()
 	insertGoldDetailSql := `INSERT INTO gold_details (gold_detail_id, code, type, detail, weight, gold_percent, gold_smith_fee, picture, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`
-	if _, err := gr.db.Exec(gr.ctx, insertGoldDetailSql, g.GoldDetailID, g.Code, g.Type, g.Detail, g.Weight, g.GoldPercent, g.GoldSmithFee, g.Picture, "normal"); err != nil {
+	if _, err := gr.db.Exec(gr.ctx, insertGoldDetailSql, id, g.Code, g.Type, g.Detail, g.Weight, g.GoldPercent, g.GoldSmithFee, g.Picture, "normal"); err != nil {
 		return 0, err
 	}
 	return id, nil
@@ -71,6 +67,28 @@ func (gr *goldRepository) QueryAllGoldDetail() ([]models.GoldDetail, error) {
 	return res, nil
 }
 
+func (gr *goldRepository) QueryGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error) {
+	var detail models.GoldDetail
+	queryGoldDetailByCodeSql := `
+		SELECT *
+		FROM gold_details
+		WHERE gold_detail_id = $1 AND status = $2;
+	`
+	rows, err := gr.db.Query(gr.ctx, queryGoldDetailByCodeSql, goldDetailID, "normal")
+	if err != nil {
+		return detail, err
+	}
+	for rows.Next() {
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status); err != nil {
+			return detail, err
+		}
+	}
+	if detail.GoldDetailID == 0 {
+		return detail, fmt.Errorf("detail not found")
+	}
+	return detail, nil
+}
+
 func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetail, error) {
 	var res []models.GoldDetail
 	queryGoldDetailByCodeSql := `
@@ -84,7 +102,7 @@ func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetai
 	}
 	for rows.Next() {
 		var detail models.GoldDetail
-		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status, &detail); err != nil {
+		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status); err != nil {
 			return res, err
 		}
 		res = append(res, detail)
@@ -103,6 +121,11 @@ func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]model
 		var goldDetail models.GoldDetail
 		if err = rows.Scan(&goldDetail.GoldDetailID, &goldDetail.Code, &goldDetail.Type, &goldDetail.Detail, &goldDetail.Weight, &goldDetail.GoldPercent, &goldDetail.GoldSmithFee, &goldDetail.Picture, &goldDetail.Status); err != nil {
 			return res, err
+		}
+		if g.Code != "" {
+			if g.Code != goldDetail.Code {
+				continue
+			}
 		}
 		if g.Type != "" {
 			if g.Type != goldDetail.Type {

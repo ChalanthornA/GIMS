@@ -15,6 +15,7 @@ func SetupRoutes(r *gin.Engine) {
 
 	r.Use(middlewares.AuthorizeJWT())
 	setUpInventoryRoute(r)
+	setUpTransactionRoute(r)
 }
 
 func setUpAuthRoute(r *gin.Engine) {
@@ -57,13 +58,14 @@ func setUpInventoryRoute(r *gin.Engine) {
 	}
 }
 
-// func setUpTransactionRoute(r *gin.Engine) {
-// 	goldRepository := repositories.NewGoldRepository(database.DB)
-// 	transactionRepository := repositories.NewTransactionRepository(database.DB)
-// 	transactionUsecase := usecases.NewTransactionUsecase(transactionRepository, goldRepository)
-// 	transactionController := controllers.NewTransactionController(transactionUsecase)
-// 	transaction := r.Group("/transaction")
-// 	{
-
-// 	}
-// }
+func setUpTransactionRoute(r *gin.Engine) {
+	goldRepository := repositories.NewGoldRepository(database.DB)
+	transactionRepository := repositories.NewTransactionRepository(database.DB)
+	transactionUsecase := usecases.NewTransactionUsecase(transactionRepository, goldRepository)
+	transactionController := controllers.NewTransactionController(transactionUsecase)
+	transaction := r.Group("/transaction")
+	{
+		transaction.POST("/newbuytransaction", transactionController.NewTransactionBuy)
+		transaction.POST("/newselltransaction", transactionController.NewTransactionSell)
+	}
+}
