@@ -67,5 +67,6 @@ func setUpTransactionRoute(r *gin.Engine) {
 	{
 		transaction.POST("/newbuytransaction", transactionController.NewTransactionBuy)
 		transaction.POST("/newselltransaction", transactionController.NewTransactionSell)
+		transaction.POST("/newchangetransaction", transactionController.NewTransactionChange)
 	}
 }

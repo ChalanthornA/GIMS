@@ -36,3 +36,20 @@ func (tu *transactionUsecase) NewTransactionTypeSell(transaction *models.Transac
 	}
 	return tu.transactionRepo.InsertNewTransaction(transaction)
 }
+
+func (tu *transactionUsecase) NewTransactionTypeChange(transaction *models.Transaction) error {
+	goldInventory, err := tu.goldRepo.CheckGoldInventoryByGoldInventoryID(transaction.GoldInventoryID)
+	if err != nil {
+		return err
+	}
+	if _, err := tu.goldRepo.QueryGoldDetailByGoldDetailID(goldInventory.GoldDetailID); err != nil {
+		return err
+	}
+	transaction.GoldDetailID = goldInventory.GoldDetailID
+	transaction.Price = transaction.SellPrice - transaction.BuyPrice
+	transaction.SetTimeNow()
+	if err := tu.goldRepo.UpdateGoldInventoryStatus(transaction.GoldInventoryID, "sold"); err != nil {
+		return err
+	}
+	return tu.transactionRepo.InsertNewTransaction(transaction)
+}

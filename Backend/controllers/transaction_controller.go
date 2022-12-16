@@ -30,7 +30,7 @@ func (tc *transactionController) NewTransactionBuy(c *gin.Context) {
 		})
 		return
 	}
-	if transaction.TransactionType != "buy" || transaction.GoldInventoryID != 0 || transaction.FromNote != "" || transaction.ToNote != "" {
+	if transaction.TransactionType != "buy" || transaction.GoldInventoryID != 0 || transaction.BuyPrice != 0 || transaction.SellPrice != 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "invalid transaction type buy body",
 		})
@@ -56,7 +56,7 @@ func (tc *transactionController) NewTransactionSell(c *gin.Context) {
 		})
 		return
 	}
-	if transaction.TransactionType != "sell" || transaction.FromNote != "" || transaction.ToNote != "" {
+	if transaction.TransactionType != "sell" || transaction.BuyPrice != 0 || transaction.SellPrice != 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "invalid transaction type sell body",
 		})
@@ -64,6 +64,32 @@ func (tc *transactionController) NewTransactionSell(c *gin.Context) {
 	}
 	setUsername(c, transaction)
 	if err := tc.transactionUseCase.NewTransactionTypeSell(transaction); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func (tc *transactionController) NewTransactionChange(c *gin.Context) {
+	transaction := new(models.Transaction)
+	if err := c.BindJSON(transaction); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if transaction.TransactionType != "change" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "invalid transaction type change body",
+		})
+		return
+	}
+	setUsername(c, transaction)
+	if err := tc.transactionUseCase.NewTransactionTypeChange(transaction); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

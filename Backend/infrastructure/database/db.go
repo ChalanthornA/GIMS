@@ -84,8 +84,8 @@ func createTransactionTable(dbpool *pgxpool.Pool, ctx context.Context) {
 			gold_detail_id BIGINT,
 			gold_inventory_id BIGINT,
 			username VARCHAR(100),
-			from_note VARCHAR(300),
-			to_note VARCHAR(300),
+			buy_price FLOAT,
+			sell_price FLOAT,
 			note VARCHAR(300)
 		);
 		SELECT create_hypertable('transactions', 'date', if_not_exists => TRUE);

@@ -11,9 +11,9 @@ type Transaction struct {
 	Price           float64   `json:"price"`
 	GoldDetailID    uint32    `json:"gold_detail_id"`
 	GoldInventoryID uint32    `json:"gold_inventory_id"`
-	Username        string    `json:"username"`  //username
-	FromNote        string    `json:"from_note"` //use when TransactionType is change
-	ToNote          string    `json:"to_note"`   //use when TransactionType is change
+	Username        string    `json:"username"`   //username
+	BuyPrice        float64   `json:"buy_price"`  //use when TransactionType is change
+	SellPrice       float64   `json:"sell_price"` //use when TransactionType is change
 	Note            string    `json:"note"`
 }
 

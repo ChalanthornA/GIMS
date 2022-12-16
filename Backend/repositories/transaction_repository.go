@@ -30,13 +30,13 @@ func (tr *transactionRepository) InsertNewTransaction(transaction *models.Transa
 			gold_detail_id,
 			gold_inventory_id,
 			username,
-			from_note,
-			to_note,
+			buy_price,
+			sell_price,
 			note
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
 		);
 	`
-	_, err := tr.db.Exec(tr.ctx, insertTransactionSql, database.GenerateUUID(), transaction.TransactionType, transaction.Date, transaction.GoldPrice, transaction.Weight, transaction.Price, transaction.GoldDetailID, transaction.GoldInventoryID, transaction.Username, transaction.FromNote, transaction.ToNote, transaction.Note)
+	_, err := tr.db.Exec(tr.ctx, insertTransactionSql, database.GenerateUUID(), transaction.TransactionType, transaction.Date, transaction.GoldPrice, transaction.Weight, transaction.Price, transaction.GoldDetailID, transaction.GoldInventoryID, transaction.Username, transaction.BuyPrice, transaction.SellPrice, transaction.Note)
 	return err
 }
