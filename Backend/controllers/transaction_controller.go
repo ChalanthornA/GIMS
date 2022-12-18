@@ -99,3 +99,22 @@ func (tc *transactionController) NewTransactionChange(c *gin.Context) {
 		"message": "ok",
 	})
 }
+
+func (tc *transactionController) RollBackTransaction(c *gin.Context) {
+	transaction := new(models.Transaction)
+	if err := c.BindJSON(transaction); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := tc.transactionUseCase.RollBackTransaction(transaction.TransactionID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}

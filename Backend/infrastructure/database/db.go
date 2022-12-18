@@ -58,6 +58,7 @@ func createGoldTable(dbpool *pgxpool.Pool, ctx context.Context){
 			gold_inventory_id BIGINT NOT NULL,
 			gold_detail_id BIGINT NOT NULL,
 			status VARCHAR(50), 
+			is_sold INT,
 			date_in TIMESTAMPTZ NOT NULL,
 			date_sold TIMESTAMPTZ NOT NULL,
 			note VARCHAR(300),

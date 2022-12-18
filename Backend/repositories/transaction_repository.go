@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
@@ -38,5 +39,24 @@ func (tr *transactionRepository) InsertNewTransaction(transaction *models.Transa
 		);
 	`
 	_, err := tr.db.Exec(tr.ctx, insertTransactionSql, database.GenerateUUID(), transaction.TransactionType, transaction.Date, transaction.GoldPrice, transaction.Weight, transaction.Price, transaction.GoldDetailID, transaction.GoldInventoryID, transaction.Username, transaction.BuyPrice, transaction.SellPrice, transaction.Note)
+	return err
+}
+
+func (tr *transactionRepository) QueryTransactionByTransactionID(transactionID uint32) (*models.Transaction, error) {
+	transaction := new(models.Transaction)
+	queryTransactionByTransactionIDSql := `SELECT * FROM transactions WHERE transaction_id = $1;`
+	rows := tr.db.QueryRow(tr.ctx, queryTransactionByTransactionIDSql, transactionID)
+	if err := rows.Scan(&transaction.TransactionID, &transaction.TransactionType, &transaction.Date, &transaction.GoldPrice, &transaction.Weight, &transaction.Price, &transaction.GoldDetailID, &transaction.GoldInventoryID, &transaction.Username, &transaction.BuyPrice, &transaction.SellPrice, &transaction.Note); err != nil {
+		return transaction, err
+	}
+	if transaction.TransactionID == 0 {
+		return transaction, fmt.Errorf("can't find transaction")
+	}
+	return transaction, nil
+}
+
+func (tr *transactionRepository) DeleteTransaction(transactionID uint32) error {
+	deleteTransactionSql := `DELETE FROM transactions WHERE transaction_id = $1;` 
+	_, err := tr.db.Exec(tr.ctx, deleteTransactionSql, transactionID)
 	return err
 }

@@ -31,7 +31,7 @@ func (tu *transactionUsecase) NewTransactionTypeSell(transaction *models.Transac
 	transaction.GoldDetailID = goldInventory.GoldDetailID
 	transaction.Weight = goldDetail.Weight
 	transaction.SetTimeNow()
-	if err := tu.goldRepo.UpdateGoldInventoryStatus(transaction.GoldInventoryID, "sold"); err != nil {
+	if err := tu.goldRepo.UpdateGoldInventoryIsSold(transaction.GoldInventoryID, 1); err != nil {
 		return err
 	}
 	return tu.transactionRepo.InsertNewTransaction(transaction)
@@ -48,8 +48,21 @@ func (tu *transactionUsecase) NewTransactionTypeChange(transaction *models.Trans
 	transaction.GoldDetailID = goldInventory.GoldDetailID
 	transaction.Price = transaction.SellPrice - transaction.BuyPrice
 	transaction.SetTimeNow()
-	if err := tu.goldRepo.UpdateGoldInventoryStatus(transaction.GoldInventoryID, "sold"); err != nil {
+	if err := tu.goldRepo.UpdateGoldInventoryIsSold(transaction.GoldInventoryID, 1); err != nil {
 		return err
 	}
 	return tu.transactionRepo.InsertNewTransaction(transaction)
+}
+
+func (tu *transactionUsecase) RollBackTransaction(transactionID uint32) error {
+	transaction, err := tu.transactionRepo.QueryTransactionByTransactionID(transactionID) 
+	if err != nil {
+		return err
+	}
+	if transaction.TransactionType != "buy" {
+		if err := tu.goldRepo.UpdateGoldInventoryIsSold(transaction.GoldInventoryID, 0); err != nil {
+			return err
+		}
+	}
+	return tu.transactionRepo.DeleteTransaction(transaction.TransactionID)
 }
