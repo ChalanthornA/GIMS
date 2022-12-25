@@ -176,3 +176,17 @@ func (gr *goldRepository) SetStatusGoldDetail(goldDetailID uint32, setStatus str
 	_, err := gr.db.Exec(gr.ctx, updateStatusGoldDetailToDelete, setStatus, goldDetailID)
 	return err
 }
+
+func (gr *goldRepository) AppendGoldDetailToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error {
+	queryGoldDetailByGoldDetailIDSql := `SELECT * FROM gold_details WHERE gold_detail_id = $1;`
+	for i := range transactionJoinGold {
+		if transactionJoinGold[i].Transaction.TransactionType == "buy" {
+			continue
+		}
+		row := gr.db.QueryRow(gr.ctx, queryGoldDetailByGoldDetailIDSql, transactionJoinGold[i].Transaction.GoldDetailID)
+		if err := row.Scan(&transactionJoinGold[i].GoldDetail.GoldDetailID, &transactionJoinGold[i].GoldDetail.Code, &transactionJoinGold[i].GoldDetail.Type, &transactionJoinGold[i].GoldDetail.Detail, &transactionJoinGold[i].GoldDetail.Weight, &transactionJoinGold[i].GoldDetail.GoldPercent, &transactionJoinGold[i].GoldDetail.GoldSmithFee, &transactionJoinGold[i].GoldDetail.Picture, &transactionJoinGold[i].GoldDetail.Status); err != nil {
+			return err
+		}
+	}
+	return nil
+}

@@ -20,3 +20,9 @@ type Transaction struct {
 func (t *Transaction) SetTimeNow() {
 	t.Date = time.Now()
 }
+
+type TransactionJoinGold struct {
+	Transaction   Transaction   `json:"transaction"`
+	GoldDetail    GoldDetail    `json:"gold_detail"`
+	GoldInventory GoldInventory `json:"gold_inventory"`
+}

@@ -118,3 +118,17 @@ func (tc *transactionController) RollBackTransaction(c *gin.Context) {
 		"message": "ok",
 	})
 }
+
+func (tc *transactionController) GetAllTransactionJoinGold(c *gin.Context) {
+	tjgs, err := tc.transactionUseCase.GetAllTransactionJoinGold()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": tjgs,
+	})
+}

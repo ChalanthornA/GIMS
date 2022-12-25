@@ -69,5 +69,6 @@ func setUpTransactionRoute(r *gin.Engine) {
 		transaction.POST("/newselltransaction", transactionController.NewTransactionSell)
 		transaction.POST("/newchangetransaction", transactionController.NewTransactionChange)
 		transaction.POST("/rollbacktransaction", transactionController.RollBackTransaction)
+		transaction.GET("/getalltransactionjoingold", transactionController.GetAllTransactionJoinGold)
 	}
 }

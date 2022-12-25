@@ -30,4 +30,6 @@ type GoldRepository interface{
 	UpdateGoldInventoryStatus(goldInventoryID uint32, status string) error
 	CheckGoldInventoryByGoldInventoryID(id uint32) (models.GoldInventory, error)
 	UpdateGoldInventoryIsSold(goldInventoryID uint32, isSold int) error
+	AppendGoldDetailToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error
+	AppendGoldInventoryToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error
 }

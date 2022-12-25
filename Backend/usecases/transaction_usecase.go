@@ -66,3 +66,17 @@ func (tu *transactionUsecase) RollBackTransaction(transactionID uint32) error {
 	}
 	return tu.transactionRepo.DeleteTransaction(transaction.TransactionID)
 }
+
+func (tu *transactionUsecase) GetAllTransactionJoinGold() ([]models.TransactionJoinGold, error) {
+	tjgs, err := tu.transactionRepo.QueryAllTransaction()
+	if err != nil {
+		return tjgs, err
+	}
+	if err := tu.goldRepo.AppendGoldDetailToTransactionJoinGold(tjgs); err != nil {
+		return tjgs, err
+	}
+	if err := tu.goldRepo.AppendGoldInventoryToTransactionJoinGold(tjgs); err != nil {
+		return tjgs, err
+	}
+	return tjgs, nil
+}

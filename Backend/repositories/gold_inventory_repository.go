@@ -48,3 +48,17 @@ func (gr *goldRepository) CheckGoldInventoryByGoldInventoryID(id uint32) (models
 	}
 	return goldInventory, err
 }
+
+func (gr *goldRepository) AppendGoldInventoryToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error {
+	queryGoldInventoryByGoldInventoryIDSql := `SELECT * FROM gold_inventories WHERE gold_inventory_id = $1;`
+	for i := range transactionJoinGold {
+		if transactionJoinGold[i].Transaction.TransactionType == "buy" {
+			continue
+		}
+		row := gr.db.QueryRow(gr.ctx, queryGoldInventoryByGoldInventoryIDSql, transactionJoinGold[i].Transaction.GoldInventoryID)
+		if err := row.Scan(&transactionJoinGold[i].GoldInventory.GoldInventoryID, &transactionJoinGold[i].GoldInventory.GoldDetailID, &transactionJoinGold[i].GoldInventory.Status, &transactionJoinGold[i].GoldInventory.DateIn, &transactionJoinGold[i].GoldInventory.DateSold, &transactionJoinGold[i].GoldInventory.Note, &transactionJoinGold[i].GoldInventory.IsSold); err != nil {
+			return err
+		}
+	}
+	return nil
+}

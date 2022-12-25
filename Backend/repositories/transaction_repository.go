@@ -45,8 +45,8 @@ func (tr *transactionRepository) InsertNewTransaction(transaction *models.Transa
 func (tr *transactionRepository) QueryTransactionByTransactionID(transactionID uint32) (*models.Transaction, error) {
 	transaction := new(models.Transaction)
 	queryTransactionByTransactionIDSql := `SELECT * FROM transactions WHERE transaction_id = $1;`
-	rows := tr.db.QueryRow(tr.ctx, queryTransactionByTransactionIDSql, transactionID)
-	if err := rows.Scan(&transaction.TransactionID, &transaction.TransactionType, &transaction.Date, &transaction.GoldPrice, &transaction.Weight, &transaction.Price, &transaction.GoldDetailID, &transaction.GoldInventoryID, &transaction.Username, &transaction.BuyPrice, &transaction.SellPrice, &transaction.Note); err != nil {
+	row := tr.db.QueryRow(tr.ctx, queryTransactionByTransactionIDSql, transactionID)
+	if err := row.Scan(&transaction.TransactionID, &transaction.TransactionType, &transaction.Date, &transaction.GoldPrice, &transaction.Weight, &transaction.Price, &transaction.GoldDetailID, &transaction.GoldInventoryID, &transaction.Username, &transaction.BuyPrice, &transaction.SellPrice, &transaction.Note); err != nil {
 		return transaction, err
 	}
 	if transaction.TransactionID == 0 {
@@ -59,4 +59,22 @@ func (tr *transactionRepository) DeleteTransaction(transactionID uint32) error {
 	deleteTransactionSql := `DELETE FROM transactions WHERE transaction_id = $1;` 
 	_, err := tr.db.Exec(tr.ctx, deleteTransactionSql, transactionID)
 	return err
+}
+
+func (tr *transactionRepository) QueryAllTransaction() ([]models.TransactionJoinGold, error) {
+	var transactionJoinGolds []models.TransactionJoinGold
+	queryAllTransactionSql := `SELECT * FROM transactions;`
+	rows, err := tr.db.Query(tr.ctx, queryAllTransactionSql)
+	if err != nil {
+		return transactionJoinGolds, err
+	}
+	for rows.Next() {
+		var transactionJoinGold models.TransactionJoinGold
+		err = rows.Scan(&transactionJoinGold.Transaction.TransactionID, &transactionJoinGold.Transaction.TransactionType, &transactionJoinGold.Transaction.Date, &transactionJoinGold.Transaction.GoldPrice, &transactionJoinGold.Transaction.Weight, &transactionJoinGold.Transaction.Price, &transactionJoinGold.Transaction.GoldDetailID, &transactionJoinGold.Transaction.GoldInventoryID, &transactionJoinGold.Transaction.Username, &transactionJoinGold.Transaction.BuyPrice, &transactionJoinGold.Transaction.SellPrice, &transactionJoinGold.Transaction.Note)
+		if err != nil {
+			return transactionJoinGolds, err
+		}
+		transactionJoinGolds = append(transactionJoinGolds, transactionJoinGold)
+	}
+	return transactionJoinGolds, nil
 }
