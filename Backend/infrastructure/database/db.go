@@ -6,9 +6,12 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var DB *pgxpool.Pool
+var GormDB *gorm.DB
 
 func NewDb() *pgxpool.Pool{
 	ctx := context.Background()
@@ -22,6 +25,16 @@ func NewDb() *pgxpool.Pool{
 	createGoldTable(dbpool, ctx)
 	createTransactionTable(dbpool, ctx)
 	return dbpool
+}
+
+func NewGormDb() *gorm.DB {
+	dsn := "host=localhost user=postgres password=ppaallmm dbname=gims port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to gorm database: %v\n", err)
+		os.Exit(1)
+	}
+	return db
 }
 
 func createUserTableSql(dbpool *pgxpool.Pool, ctx context.Context) {

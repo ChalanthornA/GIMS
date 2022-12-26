@@ -8,6 +8,7 @@ type TransactionUseCase interface {
 	NewTransactionTypeChange(transaction *models.Transaction) error
 	RollBackTransaction(transactionID uint32) error
 	GetAllTransactionJoinGold() ([]models.TransactionJoinGold, error)
+	GetTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error) 
 }
 
 type TransactionRepository interface {
@@ -15,4 +16,5 @@ type TransactionRepository interface {
 	DeleteTransaction(transactionID uint32) error
 	QueryTransactionByTransactionID(transactionID uint32) (*models.Transaction, error)
 	QueryAllTransaction() ([]models.TransactionJoinGold, error)
+	QueryTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error)
 }

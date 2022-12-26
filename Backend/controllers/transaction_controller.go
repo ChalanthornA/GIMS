@@ -132,3 +132,18 @@ func (tc *transactionController) GetAllTransactionJoinGold(c *gin.Context) {
 		"data": tjgs,
 	})
 }
+
+func (tc *transactionController) GetAllTransactionByTransactionType(c *gin.Context) {
+	transactionType := c.Query("type")
+	tjgs, err := tc.transactionUseCase.GetTransactionByTransactionType(transactionType)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": tjgs,
+	})
+}

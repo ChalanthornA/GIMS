@@ -19,7 +19,7 @@ func SetupRoutes(r *gin.Engine) {
 }
 
 func setUpAuthRoute(r *gin.Engine) {
-	userRepository := repositories.NewUserRepository(database.DB)
+	userRepository := repositories.NewUserRepository(database.DB, database.GormDB)
 	userUseCase := usecases.NewUserUseCase(userRepository)
 	userController := controllers.NewUserController(userUseCase)
 	auth := r.Group("/auth")
@@ -38,7 +38,7 @@ func setUpAuthRoute(r *gin.Engine) {
 }
 
 func setUpInventoryRoute(r *gin.Engine) {
-	goldRepository := repositories.NewGoldRepository(database.DB)
+	goldRepository := repositories.NewGoldRepository(database.DB, database.GormDB)
 	goldUseCase := usecases.NewGoldUseCase(goldRepository)
 	goldController := controllers.NewGoldController(goldUseCase)
 	inventory := r.Group("/inventory")
@@ -59,8 +59,8 @@ func setUpInventoryRoute(r *gin.Engine) {
 }
 
 func setUpTransactionRoute(r *gin.Engine) {
-	goldRepository := repositories.NewGoldRepository(database.DB)
-	transactionRepository := repositories.NewTransactionRepository(database.DB)
+	goldRepository := repositories.NewGoldRepository(database.DB, database.GormDB)
+	transactionRepository := repositories.NewTransactionRepository(database.DB, database.GormDB)
 	transactionUsecase := usecases.NewTransactionUsecase(transactionRepository, goldRepository)
 	transactionController := controllers.NewTransactionController(transactionUsecase)
 	transaction := r.Group("/transaction")
@@ -70,5 +70,6 @@ func setUpTransactionRoute(r *gin.Engine) {
 		transaction.POST("/newchangetransaction", transactionController.NewTransactionChange)
 		transaction.POST("/rollbacktransaction", transactionController.RollBackTransaction)
 		transaction.GET("/getalltransactionjoingold", transactionController.GetAllTransactionJoinGold)
+		transaction.GET("/gettransactionbytransactiontype", transactionController.GetAllTransactionByTransactionType)
 	}
 }

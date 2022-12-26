@@ -8,18 +8,20 @@ import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/gorm"
 )
 
 type transactionRepository struct {
-	db  *pgxpool.Pool
-	ctx context.Context
+	db     *pgxpool.Pool
+	gormDb *gorm.DB
+	ctx    context.Context
 }
 
-func NewTransactionRepository(db *pgxpool.Pool) domains.TransactionRepository {
-	return &transactionRepository{db: db, ctx: context.Background()}
+func NewTransactionRepository(db *pgxpool.Pool, gormDb *gorm.DB) domains.TransactionRepository {
+	return &transactionRepository{db: db, ctx: context.Background(), gormDb: gormDb}
 }
 
-func (tr *transactionRepository) InsertNewTransaction(transaction *models.Transaction) error{
+func (tr *transactionRepository) InsertNewTransaction(transaction *models.Transaction) error {
 	insertTransactionSql := `
 		INSERT INTO transactions (
 			transaction_id,
@@ -56,7 +58,7 @@ func (tr *transactionRepository) QueryTransactionByTransactionID(transactionID u
 }
 
 func (tr *transactionRepository) DeleteTransaction(transactionID uint32) error {
-	deleteTransactionSql := `DELETE FROM transactions WHERE transaction_id = $1;` 
+	deleteTransactionSql := `DELETE FROM transactions WHERE transaction_id = $1;`
 	_, err := tr.db.Exec(tr.ctx, deleteTransactionSql, transactionID)
 	return err
 }
@@ -77,4 +79,21 @@ func (tr *transactionRepository) QueryAllTransaction() ([]models.TransactionJoin
 		transactionJoinGolds = append(transactionJoinGolds, transactionJoinGold)
 	}
 	return transactionJoinGolds, nil
+}
+
+func (tr *transactionRepository) QueryTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error) {
+	var transactions []models.TransactionJoinGold
+	queryTransactionByTransactionTypeSql := `SELECT * FROM transactions WHERE transaction_type = ?;`
+	rows, err := tr.gormDb.Raw(queryTransactionByTransactionTypeSql, transactionType).Rows()
+	if err != nil {
+		return transactions, err
+	}
+	for rows.Next() {
+		var transaction models.TransactionJoinGold
+		if err := tr.gormDb.ScanRows(rows, &transaction.Transaction); err != nil {
+			return transactions, err
+		}
+		transactions = append(transactions, transaction)
+	}
+	return transactions, nil
 }

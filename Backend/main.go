@@ -9,6 +9,7 @@ import (
 func main() {
 	r := gin.Default()
 	database.DB = database.NewDb()
+	database.GormDB = database.NewGormDb()
 	defer database.DB.Close()
 
 	router.SetupRoutes(r)

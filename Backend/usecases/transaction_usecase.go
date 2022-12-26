@@ -80,3 +80,17 @@ func (tu *transactionUsecase) GetAllTransactionJoinGold() ([]models.TransactionJ
 	}
 	return tjgs, nil
 }
+
+func (tu *transactionUsecase) GetTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error) {
+	tjgs, err := tu.transactionRepo.QueryTransactionByTransactionType(transactionType)
+	if err != nil {
+		return tjgs, err
+	}
+	if err := tu.goldRepo.AppendGoldDetailToTransactionJoinGold(tjgs); err != nil {
+		return tjgs, err
+	}
+	if err := tu.goldRepo.AppendGoldInventoryToTransactionJoinGold(tjgs); err != nil {
+		return tjgs, err
+	}
+	return tjgs, nil
+}

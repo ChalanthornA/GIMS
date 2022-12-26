@@ -8,15 +8,17 @@ import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/gorm"
 )
 
 type goldRepository struct {
 	ctx context.Context
 	db  *pgxpool.Pool
+	gormDb *gorm.DB
 }
 
-func NewGoldRepository(db *pgxpool.Pool) domains.GoldRepository {
-	return &goldRepository{ctx: context.Background(), db: db}
+func NewGoldRepository(db *pgxpool.Pool, gormDb *gorm.DB) domains.GoldRepository {
+	return &goldRepository{ctx: context.Background(), db: db, gormDb: gormDb}
 }
 
 func (gr *goldRepository) NewGoldDetail(g *models.GoldDetail) (uint32, error) {

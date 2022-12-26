@@ -7,15 +7,17 @@ import (
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"gorm.io/gorm"
 )
 
 type userRepository struct{
 	ctx context.Context
 	db *pgxpool.Pool
+	gormDb *gorm.DB
 }
 
-func NewUserRepository(db *pgxpool.Pool) domains.UserRepository{
-	return &userRepository{ctx: context.Background(), db: db}
+func NewUserRepository(db *pgxpool.Pool, gormDb *gorm.DB) domains.UserRepository{
+	return &userRepository{ctx: context.Background(), db: db, gormDb: gormDb}
 }
 
 func (ur *userRepository) InsertUser(u *models.User) error{
