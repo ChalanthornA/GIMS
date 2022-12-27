@@ -62,3 +62,20 @@ func (gr *goldRepository) AppendGoldInventoryToTransactionJoinGold(transactionJo
 	}
 	return nil
 }
+
+func (gr *goldRepository) QueryAllGoldInventoryByGoldDetailID(gold_detail_id uint32) ([]models.GoldInventory, error) {
+	queryGoldInventoryByGoldDetailIDSql := `SELECT * FROM gold_inventories WHERE gold_detail_id = ? AND is_sold = ?;`
+	var inventories []models.GoldInventory
+	rowsGoldInventories, err := gr.gormDb.Raw(queryGoldInventoryByGoldDetailIDSql, gold_detail_id, 0).Rows()
+	if err != nil {
+		return inventories, err
+	}
+	for rowsGoldInventories.Next() {
+		var inventory models.GoldInventory
+		if err = gr.gormDb.ScanRows(rowsGoldInventories, &inventory); err != nil {
+			return inventories, err
+		}
+		inventories = append(inventories, inventory)
+	}
+	return inventories, nil
+}

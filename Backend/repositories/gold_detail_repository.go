@@ -112,6 +112,40 @@ func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetai
 	return res, nil
 }
 
+func checkGoldDetail(g, goldDetail models.GoldDetail) bool {
+	if g.Code != "" {
+		if g.Code != goldDetail.Code {
+			return false
+		}
+	}
+	if g.Type != "" {
+		if g.Type != goldDetail.Type {
+			return false
+		}
+	}
+	if g.Weight != 0 {
+		if g.Weight != goldDetail.Weight {
+			return false
+		}
+	}
+	if g.GoldPercent != 0 {
+		if g.GoldPercent != goldDetail.GoldPercent {
+			return false
+		}
+	}
+	if g.GoldSmithFee != 0 {
+		if g.GoldSmithFee != goldDetail.GoldSmithFee {
+			return false
+		}
+	}
+	if g.Detail != "" {
+		if g.Detail != goldDetail.Detail {
+			return false
+		}
+	}
+	return true
+}
+
 func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error) {
 	var res []models.GoldDetail
 	queryAllGoldDetailSql := `SELECT * FROM gold_details WHERE status = $1;`
@@ -124,35 +158,8 @@ func (gr *goldRepository) QueryGoldDetailByDetail(g *models.GoldDetail) ([]model
 		if err = rows.Scan(&goldDetail.GoldDetailID, &goldDetail.Code, &goldDetail.Type, &goldDetail.Detail, &goldDetail.Weight, &goldDetail.GoldPercent, &goldDetail.GoldSmithFee, &goldDetail.Picture, &goldDetail.Status); err != nil {
 			return res, err
 		}
-		if g.Code != "" {
-			if g.Code != goldDetail.Code {
-				continue
-			}
-		}
-		if g.Type != "" {
-			if g.Type != goldDetail.Type {
-				continue
-			}
-		}
-		if g.Weight != 0 {
-			if g.Weight != goldDetail.Weight {
-				continue
-			}
-		}
-		if g.GoldPercent != 0 {
-			if g.GoldPercent != goldDetail.GoldPercent {
-				continue
-			}
-		}
-		if g.GoldSmithFee != 0 {
-			if g.GoldSmithFee != goldDetail.GoldSmithFee {
-				continue
-			}
-		}
-		if g.Detail != "" {
-			if g.Detail != goldDetail.Detail {
-				continue
-			}
+		if !checkGoldDetail(*g, goldDetail){
+			continue
 		}
 		res = append(res, goldDetail)
 	}

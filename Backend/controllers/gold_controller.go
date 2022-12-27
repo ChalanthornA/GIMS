@@ -193,3 +193,23 @@ func (gc *goldController) SetStatusGoldInventory(c *gin.Context) {
 		"message": "ok",
 	})
 }
+
+func (gc *goldController) GetGoldDetailJoinInventoryByDetail(c *gin.Context) {
+	goldDetail := new(models.GoldDetail)
+	if err := c.BindJSON(goldDetail); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	res, err := gc.goldUseCase.GetGoldDetailJoinInventoryByDetail(goldDetail)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": res,
+	})
+}
