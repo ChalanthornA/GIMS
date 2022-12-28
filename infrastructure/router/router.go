@@ -13,7 +13,7 @@ func SetupRoutes(r *gin.Engine) {
 	r.Use(middlewares.CORSMiddleware())
 	setUpAuthRoute(r)
 
-	// r.Use(middlewares.AuthorizeJWT())
+	r.Use(middlewares.AuthorizeJWT())
 	setUpInventoryRoute(r)
 	setUpTransactionRoute(r)
 }
@@ -46,7 +46,7 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.GET("/findgolddetailbycode/:code", goldController.FindGoldDetailByCode)
 		inventory.POST("/findgolddetailbydetail", goldController.FindGoldDetailByDetail)
 
-		// inventory.Use(middlewares.AuthorizeAdminOrOwner())
+		inventory.Use(middlewares.AuthorizeAdminOrOwner())
 		inventory.POST("/newgold", goldController.NewGold)
 		inventory.POST("/addgold", goldController.AddGold)
 		inventory.GET("/getallgolddetail", goldController.GetAllGoldDetail)
