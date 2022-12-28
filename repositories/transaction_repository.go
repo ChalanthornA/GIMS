@@ -97,3 +97,20 @@ func (tr *transactionRepository) QueryTransactionByTransactionType(transactionTy
 	}
 	return transactions, nil
 }
+
+func (tr *transactionRepository) QueryTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error) {
+	var transactions []models.TransactionJoinGold
+	queryTransactionByTimeIntervalSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date > now() - INTERVAL '%s';`, timeRange)
+	rows, err := tr.gormDb.Raw(queryTransactionByTimeIntervalSql).Rows()
+	if err != nil {
+		return transactions, err
+	}
+	for rows.Next() {
+		var transaction models.TransactionJoinGold
+		if err := tr.gormDb.ScanRows(rows, &transaction.Transaction); err != nil {
+			return transactions, err
+		}
+		transactions = append(transactions, transaction)
+	}
+	return transactions, nil
+}

@@ -147,3 +147,19 @@ func (tc *transactionController) GetAllTransactionByTransactionType(c *gin.Conte
 		"data": tjgs,
 	})
 }
+
+func (tc *transactionController) GetTransactionByTimeInterval(c *gin.Context) {
+	timeRange := c.Param("range")
+	fmt.Println(timeRange)
+	tjgs, err := tc.transactionUseCase.GetTransactionByTimeInterval(timeRange)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": tjgs,
+	})
+}

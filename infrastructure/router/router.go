@@ -72,5 +72,6 @@ func setUpTransactionRoute(r *gin.Engine) {
 		transaction.POST("/rollbacktransaction", transactionController.RollBackTransaction)
 		transaction.GET("/getalltransactionjoingold", transactionController.GetAllTransactionJoinGold)
 		transaction.GET("/gettransactionbytransactiontype", transactionController.GetAllTransactionByTransactionType)
+		transaction.GET("/gettransactionbytimeinterval/:range", transactionController.GetTransactionByTimeInterval)
 	}
 }
