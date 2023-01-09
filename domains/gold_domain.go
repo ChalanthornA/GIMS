@@ -13,8 +13,9 @@ type GoldUseCase interface{
 	GetAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
 	SetStatusGoldDetailToDelete(goldDetailID uint32) error
 	SetStatusGoldDetailToNormal(goldDetailID uint32) error
-	SetStatusGoldInventory(goldInventoryID uint32, status string) error
+	SetStatusGoldInventory(goldInventoryIDs []uint32, status string) error
 	GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
+	GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error)
 }
 
 type GoldRepository interface{

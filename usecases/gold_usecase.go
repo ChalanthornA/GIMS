@@ -73,10 +73,19 @@ func (gu *goldUseCase) SetStatusGoldDetailToNormal(goldDetailID uint32) error {
 	return gu.goldRepo.SetStatusGoldDetail(goldDetailID, "normal")
 }
 
-func (gu *goldUseCase) SetStatusGoldInventory(goldInventoryID uint32, status string) error {
-	return gu.goldRepo.UpdateGoldInventoryStatus(goldInventoryID, status)
+func (gu *goldUseCase) SetStatusGoldInventory(goldInventoryIDs []uint32, status string) error {
+	for _, id := range goldInventoryIDs{
+		if err := gu.goldRepo.UpdateGoldInventoryStatus(id, status); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (gu *goldUseCase) GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error) {
 	return gu.goldRepo.QueryGoldDetailJoinInventoryByDetail(g)
+}
+
+func (gu *goldUseCase) GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error) {
+	return gu.goldRepo.QueryGoldDetailByGoldDetailID(goldDetailID)
 }

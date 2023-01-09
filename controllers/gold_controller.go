@@ -183,6 +183,12 @@ func (gc *goldController) SetStatusGoldInventory(c *gin.Context) {
 		})
 		return
 	}
+	if input.Status != "front" && input.Status != "safe" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "status must be front or back",
+		})
+		return
+	}
 	if err := gc.goldUseCase.SetStatusGoldInventory(input.GoldInventoryID, input.Status); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -211,5 +217,27 @@ func (gc *goldController) GetGoldDetailJoinInventoryByDetail(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 		"data": res,
+	})
+}
+
+func (gc *goldController) GetGoldDetailByGoldDetailID(c *gin.Context) {
+	id := c.Param("id")
+	goldDetailID, err := gc.goldUseCase.ConvertIDStringToUint32(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	goldDetail, err := gc.goldUseCase.GetGoldDetailByGoldDetailID(goldDetailID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": goldDetail,
 	})
 }

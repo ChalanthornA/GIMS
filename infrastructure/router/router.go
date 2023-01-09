@@ -56,6 +56,7 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.PATCH("/getbackgolddetail/:id", goldController.SetStatusGoldDetailToNormal)
 		inventory.PATCH("/setgoldinventorystatus", goldController.SetStatusGoldInventory)
 		inventory.POST("/getgolddetailjoininventorybydetail", goldController.GetGoldDetailJoinInventoryByDetail)
+		inventory.GET("/getgolddetailbygolddetailid/:id", goldController.GetGoldDetailByGoldDetailID)
 	}
 }
 
