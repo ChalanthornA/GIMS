@@ -100,3 +100,19 @@ func (tu *transactionUsecase) GetTransactionByTimeInterval(timeRange string) ([]
 	}
 	return tu.appendGoldToTransaction(tjgs)
 }
+
+func (tu *transactionUsecase) GetTransactionByDate(date string) ([]models.TransactionJoinGold, error) {
+	tjgs, err := tu.transactionRepo.QueryTransactionFromTo(date, date)
+	if err != nil {
+		return tjgs, err
+	}
+	return tu.appendGoldToTransaction(tjgs)
+}
+
+func (tu *transactionUsecase) GetTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error) {
+	tjgs, err := tu.transactionRepo.QueryTransactionFromTo(from, to)
+	if err != nil {
+		return tjgs, err
+	}
+	return tu.appendGoldToTransaction(tjgs)
+}

@@ -10,6 +10,8 @@ type TransactionUseCase interface {
 	GetAllTransactionJoinGold() ([]models.TransactionJoinGold, error)
 	GetTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error) 
 	GetTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error) 
+	GetTransactionByDate(date string) ([]models.TransactionJoinGold, error)
+	GetTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error)
 }
 
 type TransactionRepository interface {
@@ -19,4 +21,5 @@ type TransactionRepository interface {
 	QueryAllTransaction() ([]models.TransactionJoinGold, error)
 	QueryTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error)
 	QueryTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error)
+	QueryTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error)
 }

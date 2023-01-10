@@ -150,8 +150,38 @@ func (tc *transactionController) GetAllTransactionByTransactionType(c *gin.Conte
 
 func (tc *transactionController) GetTransactionByTimeInterval(c *gin.Context) {
 	timeRange := c.Param("range")
-	fmt.Println(timeRange)
 	tjgs, err := tc.transactionUseCase.GetTransactionByTimeInterval(timeRange)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": tjgs,
+	})
+}
+
+func (tc *transactionController) GetTransactionByDate(c *gin.Context) {
+	date := c.Param("date")
+	tjgs, err := tc.transactionUseCase.GetTransactionByDate(date)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": tjgs,
+	})
+}
+
+func (tc *transactionController) GetTransactionFromTo(c *gin.Context) {
+	from := c.Query("from")
+	to := c.Query("to")
+	tjgs, err := tc.transactionUseCase.GetTransactionFromTo(from, to)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),

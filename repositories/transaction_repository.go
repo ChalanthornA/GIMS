@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
@@ -10,6 +11,8 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"gorm.io/gorm"
 )
+
+const datelayout string = "2006-01-02"
 
 type transactionRepository struct {
 	db     *pgxpool.Pool
@@ -102,6 +105,29 @@ func (tr *transactionRepository) QueryTransactionByTimeInterval(timeRange string
 	var transactions []models.TransactionJoinGold
 	queryTransactionByTimeIntervalSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date > now() - INTERVAL '%s';`, timeRange)
 	rows, err := tr.gormDb.Raw(queryTransactionByTimeIntervalSql).Rows()
+	if err != nil {
+		return transactions, err
+	}
+	for rows.Next() {
+		var transaction models.TransactionJoinGold
+		if err := tr.gormDb.ScanRows(rows, &transaction.Transaction); err != nil {
+			return transactions, err
+		}
+		transactions = append(transactions, transaction)
+	}
+	return transactions, nil
+}
+
+func nextDay(d string) string{
+	toTime, _ := time.Parse(datelayout, d)
+	return toTime.AddDate(0, 0, 1).Format(datelayout)
+}
+
+func (tr *transactionRepository) QueryTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error) {
+	var transactions []models.TransactionJoinGold
+	to = nextDay(to)
+	queryTransactionByDateSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date >= '%s' AND date < '%s';`, from, to)
+	rows, err := tr.gormDb.Raw(queryTransactionByDateSql).Rows()
 	if err != nil {
 		return transactions, err
 	}
