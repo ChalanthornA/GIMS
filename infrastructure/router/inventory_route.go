@@ -24,7 +24,7 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.GET("/getallgolddetail", goldController.GetAllGoldDetail)
 		inventory.PUT("/editgolddetail", goldController.EditGoldDetail)
 		inventory.GET("/getalldetailjoininventory", goldController.GetAllGoldDetailJoinInventory)
-		inventory.PATCH("/deletegolddetail/:id", goldController.SetStatusGoldDetailToDelete)
+		inventory.PATCH("/deletegolddetail", goldController.SetStatusGoldDetailToDelete)
 		inventory.PATCH("/getbackgolddetail/:id", goldController.SetStatusGoldDetailToNormal)
 		inventory.PATCH("/setgoldinventorystatus", goldController.SetStatusGoldInventory)
 		inventory.POST("/getgolddetailjoininventorybydetail", goldController.GetGoldDetailJoinInventoryByDetail)
