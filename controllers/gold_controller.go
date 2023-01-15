@@ -240,3 +240,22 @@ func (gc *goldController) GetGoldDetailByGoldDetailID(c *gin.Context) {
 		"data": goldDetail,
 	})
 }
+
+func (gc *goldController) DeleteGoldInventoryByIDArray(c *gin.Context) {
+	input := new(models.InputDeleteGoldInventory)
+	if err := c.BindJSON(input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.DeleteGoldInventoryByIDArray(input.GoldInventoryID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}

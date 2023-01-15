@@ -29,5 +29,6 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.PATCH("/setgoldinventorystatus", goldController.SetStatusGoldInventory)
 		inventory.POST("/getgolddetailjoininventorybydetail", goldController.GetGoldDetailJoinInventoryByDetail)
 		inventory.GET("/getgolddetailbygolddetailid/:id", goldController.GetGoldDetailByGoldDetailID)
+		inventory.DELETE("/delete-gold-inventory-by-id", goldController.DeleteGoldInventoryByIDArray)
 	}
 }

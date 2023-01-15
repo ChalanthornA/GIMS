@@ -16,6 +16,7 @@ type GoldUseCase interface{
 	SetStatusGoldInventory(goldInventoryIDs []uint32, status string) error
 	GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
 	GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error)
+	DeleteGoldInventoryByIDArray(ids []uint32) error
 }
 
 type GoldRepository interface{
@@ -36,4 +37,5 @@ type GoldRepository interface{
 	AppendGoldInventoryToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error
 	QueryAllGoldInventoryByGoldDetailID(gold_detail_id uint32) ([]models.GoldInventory, error)
 	QueryGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
+	DeleteGoldInventoryByID(id uint32) error
 }

@@ -94,3 +94,12 @@ func (gu *goldUseCase) GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) 
 func (gu *goldUseCase) GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error) {
 	return gu.goldRepo.QueryGoldDetailByGoldDetailID(goldDetailID)
 }
+
+func (gu *goldUseCase) DeleteGoldInventoryByIDArray(ids []uint32) error {
+	for _, id := range ids {
+		if err := gu.goldRepo.DeleteGoldInventoryByID(id); err != nil {
+			return err
+		}
+	}
+	return nil
+}

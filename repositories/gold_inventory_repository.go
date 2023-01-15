@@ -79,3 +79,9 @@ func (gr *goldRepository) QueryAllGoldInventoryByGoldDetailID(gold_detail_id uin
 	}
 	return inventories, nil
 }
+
+func (gr *goldRepository) DeleteGoldInventoryByID(id uint32) error {
+	deleteGoldInventoryByID := `DELETE FROM gold_inventories WHERE gold_inventory_id = $1;`
+	_, err := gr.db.Exec(gr.ctx, deleteGoldInventoryByID, id)
+	return err
+}
