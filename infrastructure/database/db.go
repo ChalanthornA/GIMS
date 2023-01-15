@@ -56,7 +56,7 @@ func createGoldTable(dbpool *pgxpool.Pool, ctx context.Context){
 			weight FLOAT,
 			gold_percent FLOAT, 
 			gold_smith_fee FLOAT, 
-			picture VARCHAR(100), 
+			picture VARCHAR(500), 
 			status VARCHAR(100),
 			PRIMARY KEY (gold_detail_id)
 		);

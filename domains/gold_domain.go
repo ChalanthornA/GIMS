@@ -11,7 +11,7 @@ type GoldUseCase interface{
 	FindGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error)
 	EditGoldDetail(goldDetail *models.GoldDetail) error
 	GetAllGoldDetailJoinInventory() ([]models.GoldDetailJoinInventory, error)
-	SetStatusGoldDetailToDelete(goldDetailID uint32) error
+	SetStatusGoldDetailToDelete(goldDetailID []uint32) error
 	SetStatusGoldDetailToNormal(goldDetailID uint32) error
 	SetStatusGoldInventory(goldInventoryIDs []uint32, status string) error
 	GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)

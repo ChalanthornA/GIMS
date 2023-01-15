@@ -37,3 +37,8 @@ type InputSetStatusGoldInventory struct {
 	GoldInventoryID []uint32 `json:"gold_inventory_id"`
 	Status          string   `json:"status"`
 }
+
+type InputSetStatusGoldDetail struct {
+	GoldDetailID []uint32 `json:"gold_detail_id"`
+	Status          string   `json:"status"`
+}
