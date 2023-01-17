@@ -170,9 +170,9 @@ func (gr *goldRepository) UpdateGoldDetail(goldDetail *models.GoldDetail) error{
 	updateGoldDetailSql := `
 		UPDATE gold_details
 		SET code = $1, type = $2, detail = $3, weight = $4, gold_percent = $5, gold_smith_fee = $6, picture = $7
-		WHERE gold_detail_id = $7;
+		WHERE gold_detail_id = $8;
 	`
-	_, err := gr.db.Exec(gr.ctx, updateGoldDetailSql, goldDetail.Code, goldDetail.Type, goldDetail.Detail, goldDetail.Weight, goldDetail.GoldPercent, goldDetail.GoldSmithFee, goldDetail.GoldDetailID, goldDetail.Picture)
+	_, err := gr.db.Exec(gr.ctx, updateGoldDetailSql, goldDetail.Code, goldDetail.Type, goldDetail.Detail, goldDetail.Weight, goldDetail.GoldPercent, goldDetail.GoldSmithFee, goldDetail.Picture, goldDetail.GoldDetailID)
 	return err
 }
 
