@@ -9,10 +9,10 @@ import (
 )
 
 func (gr *goldRepository) NewGoldInventory(newGoldInventory *models.InputNewGoldInventory) error {
-	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in, date_sold, note, is_sold) VALUES ($1, $2, $3, $4, $5, $6, $7);`
+	insertGoldInventorySql := `INSERT INTO gold_inventories (gold_inventory_id, gold_detail_id, status, date_in, date_sold, note, is_sold, tag_serial_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`
 	for i := 0; i < newGoldInventory.Quantity; i++ {
 		loc, _ := time.LoadLocation("Asia/Jakarta")
-		if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, database.GenerateUUID(), newGoldInventory.GoldDetailID, "safe", time.Now().In(loc), time.Time{}, newGoldInventory.Note, 0); err != nil {
+		if _, err := gr.db.Exec(gr.ctx, insertGoldInventorySql, database.GenerateUUID(), newGoldInventory.GoldDetailID, "safe", time.Now().In(loc), time.Time{}, newGoldInventory.Note, 0, 0); err != nil {
 			return err
 		}
 	}
@@ -39,7 +39,7 @@ func (gr *goldRepository) CheckGoldInventoryByGoldInventoryID(id uint32) (models
 		return goldInventory, err
 	}
 	for rows.Next() {
-		if err = rows.Scan(&goldInventory.GoldInventoryID, &goldInventory.GoldDetailID, &goldInventory.Status, &goldInventory.DateIn, &goldInventory.DateSold, &goldInventory.Note, &goldInventory.IsSold); err != nil {
+		if err = rows.Scan(&goldInventory.GoldInventoryID, &goldInventory.GoldDetailID, &goldInventory.Status, &goldInventory.DateIn, &goldInventory.DateSold, &goldInventory.Note, &goldInventory.IsSold, &goldInventory.TagSerialNumber); err != nil {
 			return goldInventory, err
 		}
 	}
@@ -52,11 +52,12 @@ func (gr *goldRepository) CheckGoldInventoryByGoldInventoryID(id uint32) (models
 func (gr *goldRepository) AppendGoldInventoryToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error {
 	queryGoldInventoryByGoldInventoryIDSql := `SELECT * FROM gold_inventories WHERE gold_inventory_id = $1;`
 	for i := range transactionJoinGold {
+		fmt.Println(transactionJoinGold[i])
 		if transactionJoinGold[i].Transaction.TransactionType == "buy" {
 			continue
 		}
 		row := gr.db.QueryRow(gr.ctx, queryGoldInventoryByGoldInventoryIDSql, transactionJoinGold[i].Transaction.GoldInventoryID)
-		if err := row.Scan(&transactionJoinGold[i].GoldInventory.GoldInventoryID, &transactionJoinGold[i].GoldInventory.GoldDetailID, &transactionJoinGold[i].GoldInventory.Status, &transactionJoinGold[i].GoldInventory.DateIn, &transactionJoinGold[i].GoldInventory.DateSold, &transactionJoinGold[i].GoldInventory.Note, &transactionJoinGold[i].GoldInventory.IsSold); err != nil {
+		if err := row.Scan(&transactionJoinGold[i].GoldInventory.GoldInventoryID, &transactionJoinGold[i].GoldInventory.GoldDetailID, &transactionJoinGold[i].GoldInventory.Status, &transactionJoinGold[i].GoldInventory.DateIn, &transactionJoinGold[i].GoldInventory.DateSold, &transactionJoinGold[i].GoldInventory.Note, &transactionJoinGold[i].GoldInventory.IsSold, &transactionJoinGold[i].GoldInventory.TagSerialNumber); err != nil {
 			return err
 		}
 	}
