@@ -17,6 +17,7 @@ type GoldUseCase interface{
 	GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
 	GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error)
 	DeleteGoldInventoryByIDArray(ids []uint32) error
+	SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error 
 }
 
 type GoldRepository interface{
@@ -38,4 +39,5 @@ type GoldRepository interface{
 	QueryAllGoldInventoryByGoldDetailID(gold_detail_id uint32) ([]models.GoldInventory, error)
 	QueryGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
 	DeleteGoldInventoryByID(id uint32) error
+	SetTagSerialNumberGoldInventory(id, serialNumber uint32) error 
 }

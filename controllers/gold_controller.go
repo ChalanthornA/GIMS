@@ -259,3 +259,22 @@ func (gc *goldController) DeleteGoldInventoryByIDArray(c *gin.Context) {
 		"message": "ok",
 	})
 }
+
+func (gc *goldController) SetTagSerialNumberGoldInventory(c *gin.Context) {
+	input := new(models.InputSetTagSerialNumber)
+	if err := c.BindJSON(input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if err := gc.goldUseCase.SetTagSerialNumberGoldInventory(input); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}

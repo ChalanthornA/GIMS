@@ -103,3 +103,7 @@ func (gu *goldUseCase) DeleteGoldInventoryByIDArray(ids []uint32) error {
 	}
 	return nil
 }
+
+func (gu *goldUseCase) SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error {
+	return gu.goldRepo.SetTagSerialNumberGoldInventory(input.GoldInventoryID, input.TagSerialNumber)
+}
