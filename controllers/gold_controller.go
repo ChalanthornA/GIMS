@@ -269,7 +269,7 @@ func (gc *goldController) SetTagSerialNumberGoldInventory(c *gin.Context) {
 		return
 	}
 	if err := gc.goldUseCase.SetTagSerialNumberGoldInventory(input); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return

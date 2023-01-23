@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
@@ -105,5 +106,9 @@ func (gu *goldUseCase) DeleteGoldInventoryByIDArray(ids []uint32) error {
 }
 
 func (gu *goldUseCase) SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error {
+	goldInventory := gu.goldRepo.QueryGoldByTagSerialNumber(input.TagSerialNumber)
+	if goldInventory.GoldInventoryID != 0 {
+		return fmt.Errorf("this tag serial number is already used")
+	}
 	return gu.goldRepo.SetTagSerialNumberGoldInventory(input.GoldInventoryID, input.TagSerialNumber)
 }

@@ -39,5 +39,6 @@ type GoldRepository interface{
 	QueryAllGoldInventoryByGoldDetailID(gold_detail_id uint32) ([]models.GoldInventory, error)
 	QueryGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
 	DeleteGoldInventoryByID(id uint32) error
+	QueryGoldByTagSerialNumber(serialNumber uint32) *models.GoldInventory
 	SetTagSerialNumberGoldInventory(id, serialNumber uint32) error 
 }
