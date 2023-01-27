@@ -69,7 +69,7 @@ func (gr *goldRepository) QueryAllGoldDetail() ([]models.GoldDetail, error) {
 	return res, nil
 }
 
-func (gr *goldRepository) QueryGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error) {
+func (gr *goldRepository) QueryGoldDetailByGoldDetailID(goldDetailID uint32) (*models.GoldDetail, error) {
 	var detail models.GoldDetail
 	queryGoldDetailByCodeSql := `
 		SELECT *
@@ -78,17 +78,17 @@ func (gr *goldRepository) QueryGoldDetailByGoldDetailID(goldDetailID uint32) (mo
 	`
 	rows, err := gr.db.Query(gr.ctx, queryGoldDetailByCodeSql, goldDetailID, "normal")
 	if err != nil {
-		return detail, err
+		return &detail, err
 	}
 	for rows.Next() {
 		if err = rows.Scan(&detail.GoldDetailID, &detail.Code, &detail.Type, &detail.Detail, &detail.Weight, &detail.GoldPercent, &detail.GoldSmithFee, &detail.Picture, &detail.Status); err != nil {
-			return detail, err
+			return &detail, err
 		}
 	}
 	if detail.GoldDetailID == 0 {
-		return detail, fmt.Errorf("detail not found")
+		return &detail, fmt.Errorf("detail not found")
 	}
-	return detail, nil
+	return &detail, nil
 }
 
 func (gr *goldRepository) QueryGoldDetailByCode(code string) ([]models.GoldDetail, error) {

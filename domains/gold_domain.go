@@ -15,16 +15,17 @@ type GoldUseCase interface{
 	SetStatusGoldDetailToNormal(goldDetailID uint32) error
 	SetStatusGoldInventory(goldInventoryIDs []uint32, status string) error
 	GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
-	GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error)
+	GetGoldDetailByGoldDetailID(goldDetailID uint32) (*models.GoldDetail, error)
 	DeleteGoldInventoryByIDArray(ids []uint32) error
-	SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error 
+	SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error
+	QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*models.GoldJoin, error)
 }
 
 type GoldRepository interface{
 	NewGoldDetail(g *models.GoldDetail) (uint32, error)
 	NewGoldInventory(newGoldInventory *models.InputNewGoldInventory) error
 	QueryAllGoldDetail() ([]models.GoldDetail, error)
-	QueryGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error)
+	QueryGoldDetailByGoldDetailID(goldDetailID uint32) (*models.GoldDetail, error)
 	QueryGoldDetailByCode(code string) ([]models.GoldDetail, error)
 	CheckGoldDetail(g *models.GoldDetail) error
 	QueryGoldDetailByDetail(g *models.GoldDetail) ([]models.GoldDetail, error)

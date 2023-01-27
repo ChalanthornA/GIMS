@@ -92,7 +92,7 @@ func (gu *goldUseCase) GetGoldDetailJoinInventoryByDetail(g *models.GoldDetail) 
 	return gu.goldRepo.QueryGoldDetailJoinInventoryByDetail(g)
 }
 
-func (gu *goldUseCase) GetGoldDetailByGoldDetailID(goldDetailID uint32) (models.GoldDetail, error) {
+func (gu *goldUseCase) GetGoldDetailByGoldDetailID(goldDetailID uint32) (*models.GoldDetail, error) {
 	return gu.goldRepo.QueryGoldDetailByGoldDetailID(goldDetailID)
 }
 
@@ -111,4 +111,16 @@ func (gu *goldUseCase) SetTagSerialNumberGoldInventory(input *models.InputSetTag
 		return fmt.Errorf("this tag serial number is already used")
 	}
 	return gu.goldRepo.SetTagSerialNumberGoldInventory(input.GoldInventoryID, input.TagSerialNumber)
+}
+
+func (gu *goldUseCase) QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*models.GoldJoin, error) {
+	var gold *models.GoldJoin = new(models.GoldJoin)
+	var err error
+	gold.GoldInventory = gu.goldRepo.QueryGoldByTagSerialNumber(tagSerialnumber)
+	goldDetailID := gold.GoldInventory.GoldDetailID
+	if goldDetailID == 0{
+		return gold, fmt.Errorf("gold not found")
+	}
+	gold.GoldDetail, err = gu.goldRepo.QueryGoldDetailByGoldDetailID(goldDetailID)
+	return gold, err
 }

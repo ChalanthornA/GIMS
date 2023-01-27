@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
@@ -276,5 +277,34 @@ func (gc *goldController) SetTagSerialNumberGoldInventory(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
+	})
+}
+
+func (gc *goldController) GetGoldByTagSerailNumber(c *gin.Context) {
+	sn := c.Query("serial-number")
+	fmt.Println(sn)
+	sn32, err := gc.goldUseCase.ConvertIDStringToUint32(sn)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	if sn32 == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "serial number must not equal to 0",
+		})
+		return
+	}
+	gold, err := gc.goldUseCase.QueryGoldByTagSerialNumber(sn32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data": gold,
 	})
 }

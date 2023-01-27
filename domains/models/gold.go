@@ -51,3 +51,8 @@ type InputSetTagSerialNumber struct {
 	GoldInventoryID uint32 `json:"gold_inventory_id"`
 	TagSerialNumber uint32 `json:"tag_serial_number"`
 }
+
+type GoldJoin struct {
+	GoldDetail    *GoldDetail    `json:"gold_detail"`
+	GoldInventory *GoldInventory `json:"gold_inventory"`
+}
