@@ -7,7 +7,7 @@ import (
 
 type transactionUsecase struct {
 	transactionRepo domains.TransactionRepository
-	goldRepo domains.GoldRepository
+	goldRepo        domains.GoldRepository
 }
 
 func NewTransactionUsecase(tr domains.TransactionRepository, gr domains.GoldRepository) domains.TransactionUseCase {
@@ -16,6 +16,8 @@ func NewTransactionUsecase(tr domains.TransactionRepository, gr domains.GoldRepo
 
 func (tu *transactionUsecase) NewTransactionTypeBuy(transaction *models.Transaction) error {
 	transaction.SetTimeNow()
+	transaction.BuyPrice = transaction.Price
+	transaction.Price = -transaction.Price
 	return tu.transactionRepo.InsertNewTransaction(transaction)
 }
 
@@ -34,6 +36,7 @@ func (tu *transactionUsecase) NewTransactionTypeSell(transaction *models.Transac
 	if err := tu.goldRepo.UpdateGoldInventoryIsSold(transaction.GoldInventoryID, 1); err != nil {
 		return err
 	}
+	transaction.SellPrice = transaction.Price
 	return tu.transactionRepo.InsertNewTransaction(transaction)
 }
 
@@ -55,7 +58,7 @@ func (tu *transactionUsecase) NewTransactionTypeChange(transaction *models.Trans
 }
 
 func (tu *transactionUsecase) RollBackTransaction(transactionID uint32) error {
-	transaction, err := tu.transactionRepo.QueryTransactionByTransactionID(transactionID) 
+	transaction, err := tu.transactionRepo.QueryTransactionByTransactionID(transactionID)
 	if err != nil {
 		return err
 	}
@@ -115,4 +118,14 @@ func (tu *transactionUsecase) GetTransactionFromTo(from, to string) ([]models.Tr
 		return tjgs, err
 	}
 	return tu.appendGoldToTransaction(tjgs)
+}
+
+func (tu *transactionUsecase) GetDailyReport() (*models.Report, error) {
+	report, err := tu.transactionRepo.MakeReport("1 day")
+	if err != nil {
+		return report, err
+	}
+	tjgs, err1 := tu.appendGoldToTransaction(report.Transactions)
+	report.Transactions = tjgs
+	return report, err1
 }

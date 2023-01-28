@@ -12,6 +12,7 @@ type TransactionUseCase interface {
 	GetTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error) 
 	GetTransactionByDate(date string) ([]models.TransactionJoinGold, error)
 	GetTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error)
+	GetDailyReport() (*models.Report, error)
 }
 
 type TransactionRepository interface {
@@ -22,4 +23,5 @@ type TransactionRepository interface {
 	QueryTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error)
 	QueryTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error)
 	QueryTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error)
+	MakeReport(interval string) (*models.Report, error)
 }

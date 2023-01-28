@@ -26,3 +26,10 @@ type TransactionJoinGold struct {
 	GoldDetail    GoldDetail    `json:"gold_detail"`
 	GoldInventory GoldInventory `json:"gold_inventory"`
 }
+
+type Report struct {
+	Transactions []TransactionJoinGold `json:"transactions"`
+	TotalPrice float64 `json:"total_price"`
+	IncomePrice float64 `json:"income_price"`
+	OutcomePrice float64 `json:"outcome_price"`
+}

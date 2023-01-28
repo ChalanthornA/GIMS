@@ -140,3 +140,35 @@ func (tr *transactionRepository) QueryTransactionFromTo(from, to string) ([]mode
 	}
 	return transactions, nil
 }
+
+func (tr *transactionRepository) MakeReport(interval string) (*models.Report, error) {
+	var transactionJoinGolds []models.TransactionJoinGold
+	report := new(models.Report)
+	queryTransactionSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date > now() - INTERVAL '%s' ORDER BY date;`, interval)
+	rows, err := tr.gormDb.Raw(queryTransactionSql).Rows()
+	if err != nil {
+		return report, err
+	}
+	for rows.Next() {
+		var transaction models.TransactionJoinGold
+		if err := tr.gormDb.ScanRows(rows, &transaction.Transaction); err != nil {
+			return report, err
+		}
+		t := transaction.Transaction
+		if t.TransactionType == "buy" {
+			report.OutcomePrice += t.Price
+		} else if t.TransactionType == "sell" {
+			report.IncomePrice += t.Price
+		} else if t.TransactionType == "change" {
+			if t.Price > 0 {
+				report.IncomePrice += t.Price
+			} else {
+				report.OutcomePrice += t.Price
+			}
+		}
+		transactionJoinGolds = append(transactionJoinGolds, transaction)
+	}
+	report.Transactions = transactionJoinGolds
+	report.TotalPrice = report.IncomePrice + report.OutcomePrice
+	return report, nil
+}

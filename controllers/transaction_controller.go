@@ -193,3 +193,17 @@ func (tc *transactionController) GetTransactionFromTo(c *gin.Context) {
 		"data": tjgs,
 	})
 }
+
+func (tc *transactionController) GetDailyReport(c *gin.Context) {
+	report, err := tc.transactionUseCase.GetDailyReport()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"report": report,
+	})
+}
