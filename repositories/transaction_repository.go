@@ -141,10 +141,30 @@ func (tr *transactionRepository) QueryTransactionFromTo(from, to string) ([]mode
 	return transactions, nil
 }
 
+func calculatePrice(report *models.Report, t models.Transaction) {
+	if t.TransactionType == "buy" {
+		report.OutcomePrice += t.Price
+	} else if t.TransactionType == "sell" {
+		report.IncomePrice += t.Price
+	} else if t.TransactionType == "change" {
+		if t.Price > 0 {
+			report.IncomePrice += t.Price
+		} else {
+			report.OutcomePrice += t.Price
+		}
+	}
+}
+
 func (tr *transactionRepository) MakeReport(interval string) (*models.Report, error) {
 	var transactionJoinGolds []models.TransactionJoinGold
 	report := new(models.Report)
-	queryTransactionSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date > now() - INTERVAL '%s' ORDER BY date;`, interval)
+	queryTransactionSql := ""
+	if interval == "" {
+		t := time.Now().Format(datelayout)
+		queryTransactionSql = fmt.Sprintf(`SELECT * FROM transactions WHERE date >= '%s' ORDER BY date;`, t)
+	} else {
+		queryTransactionSql = fmt.Sprintf(`SELECT * FROM transactions WHERE date > now() - INTERVAL '%s' ORDER BY date;`, interval)
+	}
 	rows, err := tr.gormDb.Raw(queryTransactionSql).Rows()
 	if err != nil {
 		return report, err
@@ -155,17 +175,7 @@ func (tr *transactionRepository) MakeReport(interval string) (*models.Report, er
 			return report, err
 		}
 		t := transaction.Transaction
-		if t.TransactionType == "buy" {
-			report.OutcomePrice += t.Price
-		} else if t.TransactionType == "sell" {
-			report.IncomePrice += t.Price
-		} else if t.TransactionType == "change" {
-			if t.Price > 0 {
-				report.IncomePrice += t.Price
-			} else {
-				report.OutcomePrice += t.Price
-			}
-		}
+		calculatePrice(report, t)
 		transactionJoinGolds = append(transactionJoinGolds, transaction)
 	}
 	report.Transactions = transactionJoinGolds

@@ -121,7 +121,7 @@ func (tu *transactionUsecase) GetTransactionFromTo(from, to string) ([]models.Tr
 }
 
 func (tu *transactionUsecase) GetDailyReport() (*models.Report, error) {
-	report, err := tu.transactionRepo.MakeReport("1 day")
+	report, err := tu.transactionRepo.MakeReport("")
 	if err != nil {
 		return report, err
 	}
