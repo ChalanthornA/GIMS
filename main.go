@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/database"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/infrastructure/router"
 	"github.com/gin-gonic/gin"
@@ -13,6 +15,6 @@ func main() {
 	defer database.DB.Close()
 
 	router.SetupRoutes(r)
-
+	fmt.Println("dawdadw")
 	r.Run()
 }

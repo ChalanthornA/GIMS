@@ -13,12 +13,12 @@ import (
 var DB *pgxpool.Pool
 var GormDB *gorm.DB
 
-func NewDb() *pgxpool.Pool{
+func NewDb() *pgxpool.Pool {
 	ctx := context.Background()
 	connStr := "postgres://postgres:ppaallmm@localhost:5432/gims"
 	dbpool, err := pgxpool.Connect(ctx, connStr)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Unable to connect to pgx database: %v\n", err)
 		os.Exit(1)
 	}
 	createUserTableSql(dbpool, ctx)
@@ -28,7 +28,7 @@ func NewDb() *pgxpool.Pool{
 }
 
 func NewGormDb() *gorm.DB {
-	dsn := "host=localhost user=postgres password=ppaallmm dbname=gims port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := "postgres://postgres:ppaallmm@localhost:5432/gims"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to gorm database: %v\n", err)
@@ -46,7 +46,7 @@ func createUserTableSql(dbpool *pgxpool.Pool, ctx context.Context) {
 	fmt.Println("Successfully created users table")
 }
 
-func createGoldTable(dbpool *pgxpool.Pool, ctx context.Context){
+func createGoldTable(dbpool *pgxpool.Pool, ctx context.Context) {
 	createGoldDetailTableSql := `
 		CREATE TABLE IF NOT EXISTS gold_details (
 			gold_detail_id BIGINT NOT NULL, 

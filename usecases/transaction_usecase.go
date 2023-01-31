@@ -120,8 +120,8 @@ func (tu *transactionUsecase) GetTransactionFromTo(from, to string) ([]models.Tr
 	return tu.appendGoldToTransaction(tjgs)
 }
 
-func (tu *transactionUsecase) GetDailyReport() (*models.Report, error) {
-	report, err := tu.transactionRepo.MakeReport("")
+func (tu *transactionUsecase) GetReport(interval string) (*models.Report, error) {
+	report, err := tu.transactionRepo.MakeReport(interval)
 	if err != nil {
 		return report, err
 	}

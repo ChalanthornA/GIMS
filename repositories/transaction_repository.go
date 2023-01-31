@@ -161,6 +161,7 @@ func (tr *transactionRepository) MakeReport(interval string) (*models.Report, er
 	queryTransactionSql := ""
 	if interval == "" {
 		t := time.Now().Format(datelayout)
+		// if interval = "" this function will query only this day
 		queryTransactionSql = fmt.Sprintf(`SELECT * FROM transactions WHERE date >= '%s' ORDER BY date;`, t)
 	} else {
 		queryTransactionSql = fmt.Sprintf(`SELECT * FROM transactions WHERE date > now() - INTERVAL '%s' ORDER BY date;`, interval)

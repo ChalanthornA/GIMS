@@ -195,7 +195,22 @@ func (tc *transactionController) GetTransactionFromTo(c *gin.Context) {
 }
 
 func (tc *transactionController) GetDailyReport(c *gin.Context) {
-	report, err := tc.transactionUseCase.GetDailyReport()
+	report, err := tc.transactionUseCase.GetReport("")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"report": report,
+	})
+}
+
+func (tc *transactionController) GetReportByTimeInterval(c *gin.Context) {
+	interval := c.Query("interval")
+	report, err := tc.transactionUseCase.GetReport(interval)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
