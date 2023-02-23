@@ -308,3 +308,43 @@ func (gc *goldController) GetGoldByTagSerailNumber(c *gin.Context) {
 		"data": gold,
 	})
 }
+
+func (gc *goldController) CheckGold(c *gin.Context) {
+	tsa := new(models.CheckGoldBody)
+	if err := c.BindJSON(tsa); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": 400,
+			"message": err.Error(),
+		})
+		return
+	}
+	res, err := gc.goldUseCase.CheckFrontGold(tsa.TagSerialArray)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"message": "ok",
+		"result": res,
+	})
+}
+
+func (gc *goldController) GetAllFrontGold(c *gin.Context) {
+	goldJoins, err := gc.goldUseCase.GetAllFrontGold()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"message": "ok",
+		"data": goldJoins,
+	})
+}

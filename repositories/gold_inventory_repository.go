@@ -86,3 +86,36 @@ func (gr *goldRepository) DeleteGoldInventoryByID(id uint32) error {
 	_, err := gr.db.Exec(gr.ctx, deleteGoldInventoryByID, id)
 	return err
 }
+
+func (gr *goldRepository) QueryGoldInventoryByGoldInventoryID(id uint32) (*models.GoldInventory, error) {
+	var goldInventory *models.GoldInventory
+	queryGoldInventoryByGoldInventoryIDSql := `SELECT * from gold_inventories WHERE gold_inventory_id = ?;`
+	gr.gormDb.Raw(queryGoldInventoryByGoldInventoryIDSql, id).Scan(&goldInventory)
+	if goldInventory.GoldInventoryID == 0 {
+		return goldInventory, fmt.Errorf("inventory not found")
+	}
+	return goldInventory, nil
+}
+
+func (gr *goldRepository) QueryAllGoldInventoryStatusFront() ([]models.GoldInventory, map[uint32]string, error) {
+	var inventories []models.GoldInventory
+	queryGoldInventoryStatusFront := `SELECT * from gold_inventories WHERE status = 'front' AND is_sold = 0;`
+	mapGoldInventoryID := map[uint32]string{}
+	rowsGoldInventories, err := gr.gormDb.Raw(queryGoldInventoryStatusFront).Rows()
+	if err != nil {
+		return inventories, mapGoldInventoryID, err
+	}
+	for rowsGoldInventories.Next() {
+		var inventory models.GoldInventory
+		if err = gr.gormDb.ScanRows(rowsGoldInventories, &inventory); err != nil {
+			return inventories, mapGoldInventoryID, err
+		}
+		inventories = append(inventories, inventory)
+		if inventory.TagSerialNumber == 0 {
+			mapGoldInventoryID[inventory.GoldInventoryID] = "tag empty"
+			continue
+		}
+		mapGoldInventoryID[inventory.GoldInventoryID] = "found"
+	}
+	return inventories, mapGoldInventoryID, nil
+}

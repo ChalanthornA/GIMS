@@ -84,3 +84,26 @@ func checkGoldDetailJoinInventory(g *models.GoldDetail, goldDetail *models.GoldD
 	}
 	return true
 }
+
+func (gr *goldRepository) QueryFrontGold() ([]models.GoldJoin, error) {
+	var goldJoins []models.GoldJoin
+	queryGoldInventoryStatusFront := `SELECT * from gold_inventories WHERE status = 'front' AND is_sold = 0;`
+	queryGoldDetailByGoldDetailID := `SELECT * FROM gold_details WHERE gold_detail_id = ?;`
+	rowsGoldInventories, err := gr.gormDb.Raw(queryGoldInventoryStatusFront).Rows()
+	if err != nil {
+		return goldJoins, err
+	}
+	for rowsGoldInventories.Next() {
+		goldJoin := models.GoldJoin{}
+		var inventory *models.GoldInventory
+		var detail *models.GoldDetail
+		if err = gr.gormDb.ScanRows(rowsGoldInventories, &inventory); err != nil {
+			return goldJoins, err
+		}
+		gr.gormDb.Raw(queryGoldDetailByGoldDetailID, inventory.GoldDetailID).Scan(&detail)
+		goldJoin.GoldDetail = detail
+		goldJoin.GoldInventory = inventory
+		goldJoins = append(goldJoins, goldJoin)
+	}
+	return goldJoins, nil
+}

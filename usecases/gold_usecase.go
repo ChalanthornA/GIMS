@@ -124,3 +124,78 @@ func (gu *goldUseCase) QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*mode
 	gold.GoldDetail, err = gu.goldRepo.QueryGoldDetailByGoldDetailID(goldDetailID)
 	return gold, err
 }
+
+func (gu *goldUseCase) QueryGoldJoinByGoldInventoryIDArray(ids []uint32) []models.GoldJoin{
+	var res []models.GoldJoin
+	for _, id := range ids {
+		var goldJoin models.GoldJoin
+		goldInventory, _ := gu.goldRepo.QueryGoldInventoryByGoldInventoryID(id)
+		goldDetail, _ := gu.goldRepo.QueryGoldDetailByGoldDetailID(goldInventory.GoldDetailID)
+		goldJoin.GoldDetail = goldDetail
+		goldJoin.GoldInventory = goldInventory
+		res = append(res, goldJoin)
+	}
+	return res
+}
+
+func (gu *goldUseCase) CheckFrontGold(arrayOfSerialNumber []uint32) (models.CheckGoldResponse, error) {
+	res := models.CheckGoldResponse{}
+	var miss []uint32
+	var notin []uint32
+	var tagEmpty []uint32
+	resQueryGoldByTag := gu.goldRepo.QueryGoldInventoryByTagSerialNumberArray(arrayOfSerialNumber)
+	_, mapFrontGoldID, err := gu.goldRepo.QueryAllGoldInventoryStatusFront()
+	if err != nil {
+		return res, err
+	}
+	fmt.Println(mapFrontGoldID)
+	for _, inventory := range resQueryGoldByTag {
+		if mapFrontGoldID[inventory.GoldInventoryID] == "found" {
+			mapFrontGoldID[inventory.GoldInventoryID] = "check"
+		}else if mapFrontGoldID[inventory.GoldInventoryID] == "" {
+			mapFrontGoldID[inventory.GoldInventoryID] = "notin"
+		}else if mapFrontGoldID[inventory.GoldInventoryID] == "tag empty" {
+			tagEmpty = append(tagEmpty, inventory.GoldInventoryID)
+		}
+	}
+	for k, v := range mapFrontGoldID {
+		if v == "found" {
+			miss = append(miss, k)
+		}
+		if v == "notin" {
+			notin = append(notin, k)
+		}
+	}
+
+	res.MissFrontGold = gu.QueryGoldJoinByGoldInventoryIDArray(miss) //ทองที่ไม่ครบ
+	res.SafeGold = gu.QueryGoldJoinByGoldInventoryIDArray(notin) //ทองที่ส่งมามีแท็กแต่เป็นทองที่ไม่อยู่่ที่หน้าร้าน
+	res.TagEmptyFrontGold = gu.QueryGoldJoinByGoldInventoryIDArray(tagEmpty) //ทองที่อยู่หน้าร้านแต่ไม่มีแท็ก
+
+	if len(res.MissFrontGold) != 0 || len(res.SafeGold) != 0 || len(res.TagEmptyFrontGold) != 0 {
+		if len(res.MissFrontGold) != 0 {
+			res.Result += "There are miss front gold"
+		}
+		if len(res.SafeGold) != 0 {
+			if len(res.Result) != 0 {
+				res.Result += " And there are safe gold"
+			}else {
+				res.Result += "There are safe gold"
+			}
+		}
+		if len(res.TagEmptyFrontGold) != 0 {
+			if len(res.Result) != 0 {
+				res.Result += " And there are tag empty front gold"
+			}else {
+				res.Result += "There are tag empty front gold"
+			}
+		}
+	}else {
+		res.Result = "Complete"
+	}
+	return res, err
+}
+
+func (gu *goldUseCase) GetAllFrontGold() ([]models.GoldJoin, error) {
+	goldJoins, err := gu.goldRepo.QueryFrontGold()
+	return goldJoins, err
+}

@@ -32,5 +32,7 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.POST("/delete-gold-inventory-by-id", goldController.DeleteGoldInventoryByIDArray)
 		inventory.PATCH("/set-tag-serial-number", goldController.SetTagSerialNumberGoldInventory)
 		inventory.GET("/get-gold-by-tag-serial-number", goldController.GetGoldByTagSerailNumber)
+		inventory.POST("/check-gold", goldController.CheckGold)
+		inventory.GET("/get-front-gold", goldController.GetAllFrontGold)
 	}
 }

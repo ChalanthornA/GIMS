@@ -14,3 +14,16 @@ func (gr *goldRepository) SetTagSerialNumberGoldInventory(id, serialNumber uint3
 	_, err := gr.db.Exec(gr.ctx, updateTagSerialNumberGoldInventorySql, serialNumber, id, 0)
 	return err
 }
+
+func (gr *goldRepository) QueryGoldInventoryByTagSerialNumberArray(tagSerialNumberArray []uint32) []models.GoldInventory {
+	queryGoldInventoryByTagSerialNumberSql := `SELECT * from gold_inventories WHERE tag_serial_number = ? AND is_sold = 0;`
+	var inventories []models.GoldInventory
+	for _, tagSerialNumber := range tagSerialNumberArray {
+		var goldInventory models.GoldInventory
+		gr.gormDb.Raw(queryGoldInventoryByTagSerialNumberSql, tagSerialNumber).Scan(&goldInventory)
+		if goldInventory.GoldDetailID != 0 {
+			inventories = append(inventories, goldInventory)
+		}
+	}
+	return inventories
+}
