@@ -148,22 +148,22 @@ func (gu *goldUseCase) CheckFrontGold(arrayOfSerialNumber []uint32) (models.Chec
 	if err != nil {
 		return res, err
 	}
-	fmt.Println(mapFrontGoldID)
+	//for debug
+	// fmt.Println(mapFrontGoldID)
 	for _, inventory := range resQueryGoldByTag {
 		if mapFrontGoldID[inventory.GoldInventoryID] == "found" {
 			mapFrontGoldID[inventory.GoldInventoryID] = "check"
 		}else if mapFrontGoldID[inventory.GoldInventoryID] == "" {
 			mapFrontGoldID[inventory.GoldInventoryID] = "notin"
-		}else if mapFrontGoldID[inventory.GoldInventoryID] == "tag empty" {
-			tagEmpty = append(tagEmpty, inventory.GoldInventoryID)
 		}
 	}
 	for k, v := range mapFrontGoldID {
 		if v == "found" {
 			miss = append(miss, k)
-		}
-		if v == "notin" {
+		}else if v == "notin" {
 			notin = append(notin, k)
+		}else if v == "tag empty" {
+			tagEmpty = append(tagEmpty, k)
 		}
 	}
 
