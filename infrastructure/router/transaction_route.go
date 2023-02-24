@@ -25,5 +25,6 @@ func setUpTransactionRoute(r *gin.Engine) {
 		transaction.GET("/get-transaction-by-date/:date", transactionController.GetTransactionByDate)
 		transaction.GET("/get-transaction-from-to", transactionController.GetTransactionFromTo)
 		transaction.GET("get-daily-report", transactionController.GetDailyReport)
+		transaction.GET("get-report-by-time-interval", transactionController.GetReportByTimeInterval)
 	}
 }

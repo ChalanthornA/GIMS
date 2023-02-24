@@ -144,14 +144,19 @@ func (tr *transactionRepository) QueryTransactionFromTo(from, to string) ([]mode
 func calculatePrice(report *models.Report, t models.Transaction) {
 	if t.TransactionType == "buy" {
 		report.OutcomePrice += t.Price
+		report.BuyPrice -= t.Price
 	} else if t.TransactionType == "sell" {
 		report.IncomePrice += t.Price
+		report.SellPrice += t.Price
 	} else if t.TransactionType == "change" {
 		if t.Price > 0 {
 			report.IncomePrice += t.Price
 		} else {
 			report.OutcomePrice += t.Price
 		}
+		report.ChangeIncomePrice += t.SellPrice
+		report.ChangeOutcomePrice += t.BuyPrice
+		report.TotalChangePrice += t.Price
 	}
 }
 
