@@ -126,7 +126,7 @@ func (gu *goldUseCase) QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*mode
 }
 
 func (gu *goldUseCase) QueryGoldJoinByGoldInventoryIDArray(ids []uint32) []models.GoldJoin{
-	var res []models.GoldJoin
+	res := []models.GoldJoin{}
 	for _, id := range ids {
 		var goldJoin models.GoldJoin
 		goldInventory, _ := gu.goldRepo.QueryGoldInventoryByGoldInventoryID(id)
@@ -138,8 +138,8 @@ func (gu *goldUseCase) QueryGoldJoinByGoldInventoryIDArray(ids []uint32) []model
 	return res
 }
 
-func (gu *goldUseCase) CheckFrontGold(arrayOfSerialNumber []uint32) (models.CheckGoldResponse, error) {
-	res := models.CheckGoldResponse{}
+func (gu *goldUseCase) CheckFrontGold(arrayOfSerialNumber []uint32) (*models.CheckGoldResponse, error) {
+	res := new(models.CheckGoldResponse)
 	var miss []uint32
 	var notin []uint32
 	var tagEmpty []uint32

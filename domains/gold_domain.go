@@ -20,7 +20,7 @@ type GoldUseCase interface{
 	SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error
 	QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*models.GoldJoin, error)
 	QueryGoldJoinByGoldInventoryIDArray(ids []uint32) []models.GoldJoin
-	CheckFrontGold(arrayOfSerialNumber []uint32) (models.CheckGoldResponse, error)
+	CheckFrontGold(arrayOfSerialNumber []uint32) (*models.CheckGoldResponse, error)
 	GetAllFrontGold() ([]models.GoldJoin, error)
 }
 
