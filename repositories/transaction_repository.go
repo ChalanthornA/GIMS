@@ -118,7 +118,7 @@ func (tr *transactionRepository) QueryTransactionByTimeInterval(timeRange string
 	return transactions, nil
 }
 
-func nextDay(d string) string{
+func nextDay(d string) string {
 	toTime, _ := time.Parse(datelayout, d)
 	return toTime.AddDate(0, 0, 1).Format(datelayout)
 }
@@ -187,4 +187,49 @@ func (tr *transactionRepository) MakeReport(interval string) (*models.Report, er
 	report.Transactions = transactionJoinGolds
 	report.TotalPrice = report.IncomePrice + report.OutcomePrice
 	return report, nil
+}
+
+func calculatePriceDashboard(dashboard *models.Dashboard, t models.Transaction) {
+	if t.TransactionType == "buy" {
+		dashboard.OutcomePrice += t.Price
+		dashboard.BuyPrice -= t.Price
+	} else if t.TransactionType == "sell" {
+		dashboard.IncomePrice += t.Price
+		dashboard.SellPrice += t.Price
+	} else if t.TransactionType == "change" {
+		if t.Price > 0 {
+			dashboard.IncomePrice += t.Price
+		} else {
+			dashboard.OutcomePrice += t.Price
+		}
+		dashboard.ChangeIncomePrice += t.SellPrice
+		dashboard.ChangeOutcomePrice += t.BuyPrice
+		dashboard.TotalChangePrice += t.Price
+	}
+}
+
+func (tr *transactionRepository) MakeDashboard(from, to string) (*models.Dashboard, error) {
+	dashboard := new(models.Dashboard)
+	to = nextDay(to)
+	queryTransactionByDateSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date >= '%s' AND date < '%s';`, from, to)
+	rows, err := tr.gormDb.Raw(queryTransactionByDateSql).Rows()
+	if err != nil {
+		return dashboard, err
+	}
+	for rows.Next() {
+		var transaction models.TransactionJoinGold
+		if err := tr.gormDb.ScanRows(rows, &transaction.Transaction); err != nil {
+			return dashboard, err
+		}
+		if transaction.Transaction.TransactionType == "buy" {
+			dashboard.BuyTransaction = append(dashboard.BuyTransaction, transaction)
+		} else if transaction.Transaction.TransactionType == "sell" {
+			dashboard.SellTransaction = append(dashboard.SellTransaction, transaction)
+		} else if transaction.Transaction.TransactionType == "change" {
+			dashboard.ChangeTransaction = append(dashboard.ChangeTransaction, transaction)
+		}
+		calculatePriceDashboard(dashboard, transaction.Transaction)
+	}
+	dashboard.TotalPrice = dashboard.IncomePrice + dashboard.OutcomePrice
+	return dashboard, nil
 }

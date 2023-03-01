@@ -222,3 +222,21 @@ func (tc *transactionController) GetReportByTimeInterval(c *gin.Context) {
 		"report": report,
 	})
 }
+
+func (tc *transactionController) GetDashboard(c *gin.Context) {
+	from := c.Query("from")
+	to := c.Query("to")
+	dashboard, err := tc.transactionUseCase.GetDashboard(from, to)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": 500,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": 200,
+		"message": "ok",
+		"data": dashboard,
+	})
+}

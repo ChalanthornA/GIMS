@@ -129,3 +129,13 @@ func (tu *transactionUsecase) GetReport(interval string) (*models.Report, error)
 	report.Transactions = tjgs
 	return report, err1
 }
+
+func (tu *transactionUsecase) GetDashboard(from, to string) (*models.Dashboard, error) {
+	dashboard, err := tu.transactionRepo.MakeDashboard(from, to)
+	if err != nil {
+		return dashboard, err
+	}
+	dashboard.SellTransaction, _ = tu.appendGoldToTransaction(dashboard.SellTransaction)
+	dashboard.ChangeTransaction, _ = tu.appendGoldToTransaction(dashboard.ChangeTransaction)
+	return dashboard, nil
+}

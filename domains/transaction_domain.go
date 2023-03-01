@@ -8,11 +8,12 @@ type TransactionUseCase interface {
 	NewTransactionTypeChange(transaction *models.Transaction) error
 	RollBackTransaction(transactionID uint32) error
 	GetAllTransactionJoinGold() ([]models.TransactionJoinGold, error)
-	GetTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error) 
-	GetTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error) 
+	GetTransactionByTransactionType(transactionType string) ([]models.TransactionJoinGold, error)
+	GetTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error)
 	GetTransactionByDate(date string) ([]models.TransactionJoinGold, error)
 	GetTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error)
 	GetReport(interval string) (*models.Report, error)
+	GetDashboard(from, to string) (*models.Dashboard, error)
 }
 
 type TransactionRepository interface {
@@ -24,4 +25,5 @@ type TransactionRepository interface {
 	QueryTransactionByTimeInterval(timeRange string) ([]models.TransactionJoinGold, error)
 	QueryTransactionFromTo(from, to string) ([]models.TransactionJoinGold, error)
 	MakeReport(interval string) (*models.Report, error)
+	MakeDashboard(from, to string) (*models.Dashboard, error)
 }
