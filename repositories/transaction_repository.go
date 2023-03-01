@@ -210,6 +210,7 @@ func calculatePriceDashboard(dashboard *models.Dashboard, t models.Transaction) 
 
 func (tr *transactionRepository) MakeDashboard(from, to string) (*models.Dashboard, error) {
 	dashboard := new(models.Dashboard)
+	dashboard.GoldTypeCount = make(map[string]int)
 	to = nextDay(to)
 	queryTransactionByDateSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date >= '%s' AND date < '%s';`, from, to)
 	rows, err := tr.gormDb.Raw(queryTransactionByDateSql).Rows()

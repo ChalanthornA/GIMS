@@ -130,12 +130,33 @@ func (tu *transactionUsecase) GetReport(interval string) (*models.Report, error)
 	return report, err1
 }
 
+func (tu *transactionUsecase) appendGoldToTransactionDashboard(dashboard *models.Dashboard) error {
+	if err := tu.goldRepo.AppendGoldDetailToTransactionJoinGold(dashboard.SellTransaction); err != nil {
+		return err
+	}
+	if err := tu.goldRepo.AppendGoldInventoryToTransactionJoinGold(dashboard.SellTransaction); err != nil {
+		return err
+	}
+	if err := tu.goldRepo.AppendGoldDetailToTransactionJoinGold(dashboard.ChangeTransaction); err != nil {
+		return err
+	}
+	if err := tu.goldRepo.AppendGoldInventoryToTransactionJoinGold(dashboard.ChangeTransaction); err != nil {
+		return err
+	}
+	for _, tmp := range dashboard.SellTransaction {
+		dashboard.GoldTypeCount[tmp.GoldDetail.Type] += 1
+	}
+	for _, tmp := range dashboard.ChangeTransaction {
+		dashboard.GoldTypeCount[tmp.GoldDetail.Type] += 1
+	}
+	return nil
+}
+
 func (tu *transactionUsecase) GetDashboard(from, to string) (*models.Dashboard, error) {
 	dashboard, err := tu.transactionRepo.MakeDashboard(from, to)
 	if err != nil {
 		return dashboard, err
 	}
-	dashboard.SellTransaction, _ = tu.appendGoldToTransaction(dashboard.SellTransaction)
-	dashboard.ChangeTransaction, _ = tu.appendGoldToTransaction(dashboard.ChangeTransaction)
+	tu.appendGoldToTransactionDashboard(dashboard)
 	return dashboard, nil
 }
