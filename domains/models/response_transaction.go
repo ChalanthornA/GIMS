@@ -31,4 +31,6 @@ type Dashboard struct {
 	ChangeOutcomePrice float64               `json:"change_outcome_price"`
 	TotalChangePrice   float64               `json:"total_change_price"`
 	GoldTypeCount      map[string]int        `json:"gold_type_count"`
+	WeightCount        map[string]int       `json:"weight_count"`
+	UserCount          map[string]int        `json:"user_count"`
 }

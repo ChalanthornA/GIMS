@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"fmt"
+
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains"
 	"github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 )
@@ -145,9 +147,13 @@ func (tu *transactionUsecase) appendGoldToTransactionDashboard(dashboard *models
 	}
 	for _, tmp := range dashboard.SellTransaction {
 		dashboard.GoldTypeCount[tmp.GoldDetail.Type] += 1
+		dashboard.WeightCount[fmt.Sprintf("%.3f", tmp.GoldDetail.Weight)] += 1
+		dashboard.UserCount[tmp.Transaction.Username] += 1
 	}
 	for _, tmp := range dashboard.ChangeTransaction {
 		dashboard.GoldTypeCount[tmp.GoldDetail.Type] += 1
+		dashboard.WeightCount[fmt.Sprintf("%.3f", tmp.GoldDetail.Weight)] += 1
+		dashboard.UserCount[tmp.Transaction.Username] += 1
 	}
 	return nil
 }

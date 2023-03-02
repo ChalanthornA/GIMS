@@ -214,6 +214,8 @@ func (tr *transactionRepository) MakeDashboard(from, to string) (*models.Dashboa
 	dashboard.SellTransaction = []models.TransactionJoinGold{}
 	dashboard.ChangeTransaction = []models.TransactionJoinGold{}
 	dashboard.GoldTypeCount = map[string]int{"Necklace": 0, "Bracelet": 0, "Ring": 0, "Pendant": 0, "Earring": 0, "Bangle": 0}
+	dashboard.WeightCount = make(map[string]int)
+	dashboard.UserCount = make(map[string]int)
 	to = nextDay(to)
 	queryTransactionByDateSql := fmt.Sprintf(`SELECT * FROM transactions WHERE date >= '%s' AND date < '%s';`, from, to)
 	rows, err := tr.gormDb.Raw(queryTransactionByDateSql).Rows()

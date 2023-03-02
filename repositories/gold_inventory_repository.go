@@ -52,7 +52,6 @@ func (gr *goldRepository) CheckGoldInventoryByGoldInventoryID(id uint32) (models
 func (gr *goldRepository) AppendGoldInventoryToTransactionJoinGold(transactionJoinGold []models.TransactionJoinGold) error {
 	queryGoldInventoryByGoldInventoryIDSql := `SELECT * FROM gold_inventories WHERE gold_inventory_id = $1;`
 	for i := range transactionJoinGold {
-		fmt.Println(transactionJoinGold[i])
 		if transactionJoinGold[i].Transaction.TransactionType == "buy" {
 			continue
 		}
