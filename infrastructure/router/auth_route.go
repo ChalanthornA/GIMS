@@ -15,15 +15,15 @@ func setUpAuthRoute(r *gin.Engine) {
 	userController := controllers.NewUserController(userUseCase)
 	auth := r.Group("/auth")
 	{
-		auth.POST("/registeradmin", userController.RegisterAdmin)
+		auth.POST("/register-admin", userController.RegisterAdmin)
 		auth.POST("/signin", userController.SignIn)
 
 		auth.Use(middlewares.AuthorizeJWT())
 		auth.POST("/register", userController.Register)
 		auth.GET("/profile", userController.TestJWT)
-		auth.PUT("/renameusername", userController.RenameUsername)
-		auth.PUT("/updatepassword", userController.UpdatePassword)
-		auth.GET("/queryalluser", userController.QueryAllUser)
-		auth.DELETE("/deleteuser/:username", userController.DeleteUser)
+		auth.PUT("/rename-username", userController.RenameUsername)
+		auth.PUT("/update-password", userController.UpdatePassword)
+		auth.GET("/query-all-user", userController.QueryAllUser)
+		auth.DELETE("/delete-user/:username", userController.DeleteUser)
 	}
 }
