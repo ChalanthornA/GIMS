@@ -17,6 +17,8 @@ func setUpInventoryRoute(r *gin.Engine) {
 	{
 		inventory.GET("/find-gold-detail-by-code/:code", goldController.FindGoldDetailByCode)
 		inventory.POST("/find-gold-detail-by-detail", goldController.FindGoldDetailByDetail)
+		inventory.POST("/get-gold-detail-join-inventory-by-detail", goldController.GetGoldDetailJoinInventoryByDetail)
+		inventory.GET("/get-front-gold", goldController.GetAllFrontGold)
 
 		inventory.Use(middlewares.AuthorizeAdminOrOwner())
 		inventory.POST("/new-gold", goldController.NewGold)
@@ -27,12 +29,10 @@ func setUpInventoryRoute(r *gin.Engine) {
 		inventory.PATCH("/delete-gold-detail", goldController.SetStatusGoldDetailToDelete)
 		inventory.PATCH("/get-back-gold-detail/:id", goldController.SetStatusGoldDetailToNormal)
 		inventory.PATCH("/set-gold-inventory-status", goldController.SetStatusGoldInventory)
-		inventory.POST("/get-gold-detail-join-inventory-by-detail", goldController.GetGoldDetailJoinInventoryByDetail)
 		inventory.GET("/get-gold-detail-by-gold-detail-id/:id", goldController.GetGoldDetailByGoldDetailID)
 		inventory.POST("/delete-gold-inventory-by-id", goldController.DeleteGoldInventoryByIDArray)
 		inventory.PATCH("/set-tag-serial-number", goldController.SetTagSerialNumberGoldInventory)
 		inventory.GET("/get-gold-by-tag-serial-number", goldController.GetGoldByTagSerailNumber)
 		inventory.POST("/check-gold", goldController.CheckGold)
-		inventory.GET("/get-front-gold", goldController.GetAllFrontGold)
 	}
 }
