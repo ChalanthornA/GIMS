@@ -5,6 +5,7 @@ import "github.com/ChalanthornA/Gold-Inventory-Management-System/domains/models"
 type GoldUseCase interface{
 	NewGold(goldDetail *models.InputNewGoldDetail) error
 	ConvertIDStringToUint32(id string) (uint32, error)
+	ConvertIDStringToUint64(id string) (uint64, error)
 	AddGold(newGoldInventory *models.InputNewGoldInventory) error
 	GetAllGoldDetail() ([]models.GoldDetail, error)
 	FindGoldDetailByCode(code string) ([]models.GoldDetail, error)
@@ -18,9 +19,9 @@ type GoldUseCase interface{
 	GetGoldDetailByGoldDetailID(goldDetailID uint32) (*models.GoldDetail, error)
 	DeleteGoldInventoryByIDArray(ids []uint32) error
 	SetTagSerialNumberGoldInventory(input *models.InputSetTagSerialNumber) error
-	QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*models.GoldJoin, error)
+	QueryGoldByTagSerialNumber(tagSerialnumber uint64) (*models.GoldJoin, error)
 	QueryGoldJoinByGoldInventoryIDArray(ids []uint32) []models.GoldJoin
-	CheckFrontGold(arrayOfSerialNumber []uint32) (*models.CheckGoldResponse, error)
+	CheckFrontGold(arrayOfSerialNumber []uint64) (*models.CheckGoldResponse, error)
 	GetAllFrontGold() ([]models.GoldJoin, error)
 }
 
@@ -43,10 +44,10 @@ type GoldRepository interface{
 	QueryAllGoldInventoryByGoldDetailID(gold_detail_id uint32) ([]models.GoldInventory, error)
 	QueryGoldDetailJoinInventoryByDetail(g *models.GoldDetail) ([]models.GoldDetailJoinInventory, error)
 	DeleteGoldInventoryByID(id uint32) error
-	QueryGoldByTagSerialNumber(serialNumber uint32) *models.GoldInventory
-	SetTagSerialNumberGoldInventory(id, serialNumber uint32) error 
+	QueryGoldByTagSerialNumber(serialNumber uint64) *models.GoldInventory
+	SetTagSerialNumberGoldInventory(id uint32, serialNumber uint64) error 
 	QueryAllGoldInventoryStatusFront() ([]models.GoldInventory, map[uint32]string, error) 
-	QueryGoldInventoryByTagSerialNumberArray(tagSerialNumberArray []uint32) []models.GoldInventory
+	QueryGoldInventoryByTagSerialNumberArray(tagSerialNumberArray []uint64) []models.GoldInventory
 	QueryGoldInventoryByGoldInventoryID(id uint32) (*models.GoldInventory, error)
 	QueryFrontGold() ([]models.GoldJoin, error)
 }

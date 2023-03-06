@@ -10,5 +10,5 @@ type GoldInventory struct {
 	DateSold        time.Time `json:"date_sold"`
 	Note            string    `json:"note"`
 	IsSold          int       `json:"is_sold"`
-	TagSerialNumber uint32    `json:"tag_serail_number"`
+	TagSerialNumber uint64    `json:"tag_serail_number"`
 }

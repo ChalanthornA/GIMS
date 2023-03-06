@@ -21,6 +21,11 @@ func (gu *goldUseCase) ConvertIDStringToUint32(id string) (uint32, error) {
 	return uint32(goldDetailID), err
 }
 
+func (gu *goldUseCase) ConvertIDStringToUint64(id string) (uint64, error) {
+	goldDetailID, err := strconv.ParseUint(id, 10, 64)
+	return uint64(goldDetailID), err
+}
+
 func (gu *goldUseCase) NewGold(g *models.InputNewGoldDetail) error {
 	newGoldDetail := &models.GoldDetail{Code: g.Code, Type: g.Type, Detail: g.Detail, Weight: g.Weight, GoldPercent: g.GoldPercent, GoldSmithFee: g.GoldSmithFee, Picture: g.Picture, Status: g.Status}
 	if err := gu.goldRepo.CheckGoldDetail(newGoldDetail); err != nil {
@@ -113,7 +118,7 @@ func (gu *goldUseCase) SetTagSerialNumberGoldInventory(input *models.InputSetTag
 	return gu.goldRepo.SetTagSerialNumberGoldInventory(input.GoldInventoryID, input.TagSerialNumber)
 }
 
-func (gu *goldUseCase) QueryGoldByTagSerialNumber(tagSerialnumber uint32) (*models.GoldJoin, error) {
+func (gu *goldUseCase) QueryGoldByTagSerialNumber(tagSerialnumber uint64) (*models.GoldJoin, error) {
 	var gold *models.GoldJoin = new(models.GoldJoin)
 	var err error
 	gold.GoldInventory = gu.goldRepo.QueryGoldByTagSerialNumber(tagSerialnumber)
@@ -138,7 +143,7 @@ func (gu *goldUseCase) QueryGoldJoinByGoldInventoryIDArray(ids []uint32) []model
 	return res
 }
 
-func (gu *goldUseCase) CheckFrontGold(arrayOfSerialNumber []uint32) (*models.CheckGoldResponse, error) {
+func (gu *goldUseCase) CheckFrontGold(arrayOfSerialNumber []uint64) (*models.CheckGoldResponse, error) {
 	res := new(models.CheckGoldResponse)
 	var miss []uint32
 	var notin []uint32

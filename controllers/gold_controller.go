@@ -283,20 +283,20 @@ func (gc *goldController) SetTagSerialNumberGoldInventory(c *gin.Context) {
 func (gc *goldController) GetGoldByTagSerailNumber(c *gin.Context) {
 	sn := c.Query("serial-number")
 	fmt.Println(sn)
-	sn32, err := gc.goldUseCase.ConvertIDStringToUint32(sn)
+	sn64, err := gc.goldUseCase.ConvertIDStringToUint64(sn)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	if sn32 == 0 {
+	if sn64 == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "serial number must not equal to 0",
 		})
 		return
 	}
-	gold, err := gc.goldUseCase.QueryGoldByTagSerialNumber(sn32)
+	gold, err := gc.goldUseCase.QueryGoldByTagSerialNumber(sn64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),

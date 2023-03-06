@@ -36,9 +36,9 @@ type InputDeleteGoldInventory struct {
 
 type InputSetTagSerialNumber struct {
 	GoldInventoryID uint32 `json:"gold_inventory_id"`
-	TagSerialNumber uint32 `json:"tag_serial_number"`
+	TagSerialNumber uint64 `json:"tag_serial_number"`
 }
 
 type CheckGoldBody struct {
-	TagSerialArray []uint32 `json:"tag_serial_array"`
+	TagSerialArray []uint64 `json:"tag_serial_array"`
 }
